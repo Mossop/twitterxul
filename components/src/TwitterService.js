@@ -43,6 +43,10 @@ const Cr = Components.results;
 Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
 Components.utils.import("resource:///modules/Twitter.jsm");
 
+const TYPE_STATUS = 0;
+const TYPE_REPLY = 1;
+const TYPE_DIRECT = 2;
+
 function LOG(str) {
   dump("TwitterService.js: " + str + "\n");
 }
@@ -51,12 +55,189 @@ function TwitterService() {
 }
 
 TwitterService.prototype = {
+  db: null,
+
   startup: function() {
+    var dbfile = Cc["@mozilla.org/file/directory_service;1"].
+                 getService(Ci.nsIProperties).
+                 get("ProfD", Ci.nsIFile);
+    dbfile.append("twitter.sqlite");
+    
+    var storageService = Components.classes["@mozilla.org/storage/service;1"]
+                            .getService(Ci.mozIStorageService);
+    this.db = storageService.openDatabase(dbfile);
+
+    switch (this.db.schemaVersion) {
+    case 0:
+      this.createSchema();
+      break;
+    case 1:
+      break;
+    default:
+      LOG("Unknown database schema " + this.db.schemaVersion);
+      return;
+    }
+
+    this.refresh();
+  },
+
+  createSchema: function() {
+    this.db.createTable("People",
+      "id INTEGER PRIMARY KEY," +
+      "username TEXT," +
+      "name TEXT," +
+      "location TEXT," +
+      "description TEXT," +
+      "imageURL TEXT," +
+      "homeURL TEXT");
+    this.db.createTable("Messages",
+      "id INTEGER," +
+      "type INTEGER," +
+      "created INTEGER," +
+      "author INTEGER," +
+      "text TEXT," +
+      "source TEXT," +
+      "target INTEGER");
+    this.db.createStatement("CREATE UNIQUE INDEX MessageType ON Messages (id, type)").execute();
+    this.db.schemaVersion = 1;
+  },
+
+  getTypeForMessage: function(message) {
+    try {
+      if (message.QueryInterface(Ci.twIDirectMessage))
+        return TYPE_DIRECT;
+    } catch (e) { }
+    try {
+      if (message.QueryInterface(Ci.twIReply))
+        return TYPE_REPLY;
+    } catch (e) { }
+    return TYPE_STATUS;
+  },
+
+  isMessageInDatabase: function(message) {
+    var stmt = this.db.createStatement("SELECT id FROM Messages WHERE id=? AND type=?");
+    stmt.bindInt64Parameter(0, message.id);
+    stmt.bindInt64Parameter(1, this.getTypeForMessage(message));
+    var result = stmt.executeStep();
+    stmt.reset();
+    return result;
+  },
+
+  addMessageToDatabase: function(message) {
+    var type = this.getTypeForMessage(message);
+    var cols = "id,type,created,author,text,source";
+    var params = "?,?,?,?,?,?";
+    switch (type) {
+    case TYPE_DIRECT:
+    case TYPE_REPLY:
+      cols += ",target";
+      params += ",?";
+    }
+
+    this.addPersonToDatabase(message.author);
+    var stmt = this.db.createStatement("INSERT INTO Messages (" + cols + ") VALUES (" + params +")");
+    stmt.bindInt64Parameter(0, message.id);
+    stmt.bindInt64Parameter(1, type);
+    stmt.bindInt64Parameter(2, message.created);
+    stmt.bindInt64Parameter(3, message.author.id);
+    stmt.bindStringParameter(4, message.text);
+    stmt.bindStringParameter(5, message.source);
+
+    switch (type) {
+    case TYPE_DIRECT:
+      this.addPersonToDatabase(message.recipient);
+      stmt.bindInt64Parameter(6, message.recipient.id);
+      break;
+    case TYPE_REPLY:
+      this.addPersonToDatabase(message.inReplyTo);
+      stmt.bindInt64Parameter(6, message.inReplyTo.id);
+      break;
+    }
+
+    stmt.execute();
+  },
+
+  addPersonToDatabase: function(person) {
+    var stmt = this.db.createStatement("SELECT id FROM People WHERE id=?");
+    stmt.bindInt64Parameter(0, person.id);
+    var result = stmt.executeStep();
+    stmt.reset();
+
+    if (!person.name) {
+      // A sparse record can't update anything to the database
+      if (result)
+        return;
+      stmt = this.db.createStatement("INSERT INTO People (id,username) VALUES (?,?)");
+      stmt.bindInt64Parameter(0, person.id);
+      stmt.bindStringParameter(1, person.username);
+      stmt.execute();
+      return;
+    }
+
+    if (result) {
+      var str = "UPDATE People SET username=?,name=?,location=?," +
+                                  "description=?,imageURL=?,homeURL=? WHERE id=?";
+    }
+    else {
+      str = "INSERT INTO People (username,name,location,description,imageURL," +
+                                "homeURL,id) VALUES (?,?,?,?,?,?,?)";
+    }
+    stmt = this.db.createStatement(str);
+    stmt.bindStringParameter(0, person.username);
+    stmt.bindStringParameter(1, person.name);
+    stmt.bindStringParameter(2, person.location);
+    stmt.bindStringParameter(3, person.description);
+    stmt.bindStringParameter(4, person.imageURL);
+    stmt.bindStringParameter(5, person.homeURL);
+    stmt.bindInt64Parameter(6, person.id);
+    stmt.execute();
+  },
+
+  opCount: null,
+  addedItems: null,
+  twitterCallback: function(items, error) {
+    this.opCount--;
+    if (error) {
+      LOG("Error getting items: " + error);
+    }
+    else {
+      items.forEach(function(item) {
+        if (!this.isMessageInDatabase(item)) {
+          this.addMessageToDatabase(item);
+          this.addedItems.push(item);
+        }
+      }, this);
+    }
+
+    if (this.opCount == 0) {
+      LOG("Retrieved " + this.addedItems.length + " items");
+      this.addedItems = null;
+    }
+  },
+
+  // twITwitterService implementation
+  refresh: function() {
+    if (this.opCount)
+      return;
+
+    var prefs = Cc["@mozilla.org/preferences-service;1"].
+                getService(Ci.nsIPrefBranch);
+    var user = prefs.getCharPref("twitter.username");
+    var pass = prefs.getCharPref("twitter.password");
+
+    this.addedItems = [];
+    var self = this;
+    var callback = function(items, error) {
+      self.twitterCallback(items, error);
+    }
+    Twitter.fetchFriendsTimeline(user, pass, callback);
+    Twitter.fetchReceivedDirectMessages(user, pass, callback);
+    Twitter.fetchSentDirectMessages(user, pass, callback);
+    this.opCount += 3;
   },
 
   // nsIObserver implementation
   observe: function(subject, topic, data) {
-    LOG(topic);
     switch (topic) {
     case "profile-after-change":
       this.startup();

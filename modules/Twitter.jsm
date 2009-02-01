@@ -48,6 +48,15 @@ function LOG(str) {
 
 var EXPORTED_SYMBOLS = [ "Twitter" ];
 
+function safecall(callback) {
+  try {
+    callback.apply(null, Array.splice(arguments, 1));
+  }
+  catch (e) {
+    LOG("Error calling callback " + e);
+  }
+}
+
 function Authenticator(username, password) {
   this.username = username;
   this.password = password;
@@ -131,6 +140,10 @@ Status.prototype = {
   text: null,
   source: null,
 
+  toString: function() {
+    return "[Status: " + this.toSource() + "]";
+  },
+
   _parse: function(item) {
     this.id = item.id;
     this.created = Date.parse(item.created_at);
@@ -144,6 +157,9 @@ Status.prototype = {
       this.author = new Person();
       this.author._parse(item.sender);
     }
+    else {
+      LOG("No author found for item " + item.toSource());
+    }
   },
 
   QueryInterface: XPCOMUtils.generateQI([Ci.twIMessage])
@@ -154,12 +170,15 @@ function Reply() {
 
 Reply.prototype = new Status();
 Reply.prototype.inReplyTo = null;
+Reply.prototype.toString = function() {
+  return "[Reply: " + this.toSource() + "]";
+};
 Reply.prototype._parse = function(item) {
   Status.prototype._parse.call(this, item);
   this.inReplyTo = new Person();
   this.inReplyTo.id = item.in_reply_to_user_id;
   this.inReplyTo.username = item.in_reply_to_user_id;
-}
+};
 Reply.prototype.QueryInterface = XPCOMUtils.generateQI([Ci.twIReply,
                                                         Ci.twIMessage]);
 
@@ -168,11 +187,14 @@ function DirectMessage() {
 
 DirectMessage.prototype = new Status();
 DirectMessage.prototype.recipient = null;
+DirectMessage.prototype.toString = function() {
+  return "[Direct Message: " + this.toSource() + "]";
+};
 DirectMessage.prototype._parse = function(item) {
   Status.prototype._parse.call(this, item);
   this.recipient = new Person();
   this.recipient._parse(item.recipient);
-}
+};
 DirectMessage.prototype.QueryInterface = XPCOMUtils.generateQI([Ci.twIDirectMessage,
                                                                 Ci.twIMessage]);
 
@@ -184,14 +206,14 @@ Parser.prototype = {
   callback: null,
 
   parseData: function(json) {
-    LOG("Should never see this");
+    LOG("Should never get here");
   },
 
   onLoad: function(event) {
     var request = event.target;
     if (request.status != 200) {
-      LOG("Request failed: " + request.status);
-      this.callback(null, request.statusText);
+      LOG("Request failed: " + request.statusText);
+      safecall(this.callback, null, request.statusText);
       return;
     }
 
@@ -200,30 +222,31 @@ Parser.prototype = {
       if (json) {
         var items = this.parseData(json);
         if (items) {
-          this.callback(items, null);
+          safecall(this.callback, items, null);
         }
         else {
           LOG("Server returned unparseable data: " + request.responseText);
-          this.callback(null, "Unexpected data returned from server.");
+          safecall(this.callback, null, "Unexpected data returned from server.");
         }
       }
       else {
         LOG("Server returned bad JSON data: " + request.responseText);
-        this.callback(null, "Unexpected data returned from server.");
+        safecall(this.callback, null, "Unexpected data returned from server.");
       }
     }
     catch (e) {
       LOG("Failed to parse: " + e);
-      this.callback(null, e.toString());
+      safecall(this.callback, null, e.toString());
     }
   },
 
   onError: function(event) {
-    LOG("Request failed");
-    this.callback(null, event.target.statusText);
+    LOG("Request failed: " + event.target.statusText);
+    safecall(this.callback, null, event.target.statusText);
   },
 
   startRequest: function(username, password, url) {
+    LOG("Requesting " + url);
     var request = Cc["@mozilla.org/xmlextras/xmlhttprequest;1"].
                   createInstance(Ci.nsIXMLHttpRequest);
     request.open("GET", url, true);
@@ -287,12 +310,12 @@ var Twitter = {
   },
 
   fetchSentDirectMessages: function(username, password, callback, since) {
-    var parser = new TimelineParser(callback);
+    var parser = new DirectMessageParser(callback);
     parser.startRequest(username, password, "http://twitter.com/direct_messages/sent.json");
   },
 
   fetchReceivedDirectMessages: function(username, password, callback, since) {
-    var parser = new TimelineParser(callback);
+    var parser = new DirectMessageParser(callback);
     parser.startRequest(username, password, "http://twitter.com/direct_messages.json");
   },
 
