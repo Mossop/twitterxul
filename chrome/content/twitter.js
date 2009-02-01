@@ -59,6 +59,7 @@ function Startup() {
                 getService(Ci.twITwitterService);
   document.documentElement.setAttribute("busy", service.busy ? "true" : "false");
   service.addUpdateListener(UpdateListener);
+  document.getElementById("statuslist").builder.datasource = service.database;
 }
 
 function Shutdown() {

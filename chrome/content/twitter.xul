@@ -76,7 +76,7 @@
     </menu>
   </menubar>
 
-  <richlistbox datasources="profile:twitter.sqlite" ref="*" querytype="storage"
+  <richlistbox datasources="rdf:null" ref="*" querytype="storage"
                id="statuslist" flex="1">
     <template>
       <query>
