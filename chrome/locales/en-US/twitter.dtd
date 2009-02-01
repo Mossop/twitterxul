@@ -1,2 +1,24 @@
 <!ENTITY window.title          "&brandShortName;">
 <!ENTITY window.style          "width: 30em; height: 50em;">
+
+
+<!ENTITY toolsMenu.label                 "Tools">
+<!ENTITY toolsMenu.accesskey             "T">
+
+<!ENTITY addons.label                    "Add-ons">
+<!ENTITY addons.accesskey                "A">
+<!ENTITY console.label                   "Error Console">
+<!ENTITY console.accesskey               "E">
+<!ENTITY config.label                    "Advanced Configuration">
+<!ENTITY config.accesskey                "C">
+<!ENTITY inspector.label                 "DOM Inspector">
+<!ENTITY inspector.accesskey             "I">
+
+
+<!ENTITY helpMenu.label                  "Help">
+<!ENTITY helpMenu.accesskey              "H">
+
+<!ENTITY update.label                    "Check for Updates…">
+<!ENTITY update.accesskey                "C">
+<!ENTITY about.label                     "About &brandShortName;">
+<!ENTITY about.accesskey                 "A">

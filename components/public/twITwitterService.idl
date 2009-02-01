@@ -36,58 +36,15 @@
 
 #include "nsISupports.idl"
 
-/**
- * Represents a Twitter user
- */
-[scriptable, uuid(308412c3-a576-4a3d-a69b-e482a246e5f5)]
-interface twIPerson : nsISupports
-{
-  readonly attribute PRUint64 id;
-  readonly attribute AString username;
-  readonly attribute AString name;
-  readonly attribute AString location;
-  readonly attribute AString description;
-  readonly attribute AString imageURL;
-  readonly attribute AString homeURL;
-};
+interface mozIStorageConnection;
 
 /**
- * Represents a Twitter message
+ * The main interface to the background service
  */
-[scriptable, uuid(5266e6fc-8ecc-47c7-b2b1-2fb83614cff9)]
-interface twIMessage : nsISupports
+[scriptable, uuid(c7720cbf-bddf-4a9b-8269-6875f1da972a)]
+interface twITwitterService : nsISupports
 {
-  readonly attribute PRUint64 id;
-  readonly attribute PRUint64 created;
-  readonly attribute twIPerson author;
-  readonly attribute AString text;
-  readonly attribute AString source;
-};
+  readonly attribute mozIStorageConnection database;
 
-/**
- * Represents a Twitter reply
- */
-[scriptable, uuid(ebabc46b-28f8-4b89-9586-e1a6d9f5ee68)]
-interface twIReply : twIMessage
-{
-  readonly attribute twIPerson inReplyTo;
-};
-
-/**
- * Represents a Twitter direct message
- */
-[scriptable, uuid(5708f459-7e53-4a8d-8f21-ac1ff493bc58)]
-interface twIDirectMessage : twIMessage
-{
-  readonly attribute twIPerson recipient;
-};
-
-[scriptable, uuid(ef8f7e4b-c024-4b99-acf9-16e130b31033)]
-interface twIReceivedDirectMessage : twIDirectMessage
-{
-};
-
-[scriptable, uuid(e319c40d-e497-4b53-bad9-ab494363acac)]
-interface twISentDirectMessage : twIDirectMessage
-{
+  void refresh();
 };

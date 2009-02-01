@@ -1,0 +1,16 @@
+richlistbox {
+  margin: 0;
+}
+
+richlistitem {
+  -moz-box-align: start;
+}
+
+.author-image {
+  margin: 3px;
+}
+
+.user {
+  font-size: 120%;
+  font-weight: bold;
+}

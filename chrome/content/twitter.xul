@@ -36,6 +36,7 @@
 # ***** END LICENSE BLOCK *****
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://twitter/content/twitter.css" type="text/css"?>
 <?xml-stylesheet href="chrome://twitter/skin/" type="text/css"?>
 
 <!DOCTYPE window [
@@ -45,6 +46,76 @@
 %windowDTD;
 ]>
 
-<window windowtype="Canary:Main" style="&window.style;" title="&window.title;"
-        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+<window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        windowtype="Canary:Main" style="&window.style;" title="&window.title;">
+
+  <script type="application/javascript" src="twitter.js"/>
+
+  <menubar>
+    <menu id="toolsMenu" label="&toolsMenu.label;" accesskey="&toolsMenu.accesskey;">
+      <menupopup>
+        <menuitem id="menu-addons" oncommand="openAddons()" class="menuitem-iconic"
+                  label="&addons.label;" accesskey="&addons.accesskey;"/>
+        <menuitem id="menu-console" oncommand="openErrorConsole()" class="menuitem-iconic"
+                  label="&console.label;" accesskey="&console.accesskey;"/>
+        <menuitem id="menu-config" oncommand="openConfig()" class="menuitem-iconic"
+                  label="&config.label;" accesskey="&config.accesskey;"/>
+        <menuseparator/>
+        <menuitem id="menu-inspector" oncommand="openDOMInspector()" class="menuitem-iconic"
+                  label="&inspector.label;" accesskey="&inspector.accesskey;"/>
+      </menupopup>
+    </menu>
+    <menu id="helpMenu" label="&helpMenu.label;" accesskey="&helpMenu.accesskey;">
+      <menupopup onpopupshowing="buildHelpMenu();">
+        <menuitem id="menu-update" oncommand="openUpdates()" class="menuitem-iconic"
+                  label="&update.label;" accesskey="&update.accesskey;"/>
+        <menuitem id="aboutName" oncommand="openAbout()"
+                  label="&about.label;" accesskey="&about.accesskey;"/>
+      </menupopup>
+    </menu>
+  </menubar>
+
+  <richlistbox datasources="profile:twitter.sqlite" ref="*" querytype="storage"
+               id="statuslist" flex="1">
+    <template>
+      <query>
+        SELECT Messages.id AS id,
+               Messages.type AS type,
+               Messages.created AS date,
+               Messages.text AS text,
+               Messages.source AS source,
+               Author.id AS author_id,
+               Author.username AS author_username,
+               Author.type AS author_type,
+               Author.name AS author_name,
+               Author.location AS author_location,
+               Author.description AS author_description,
+               Author.imageURL AS author_imageURL,
+               Author.homeURL AS author_homeURL,
+               Target.id AS target_id,
+               Target.username AS target_username,
+               Target.type AS target_type,
+               Target.name AS target_name,
+               Target.location AS target_location,
+               Target.description AS target_description,
+               Target.imageURL AS target_imageURL,
+               Target.homeURL AS target_homeURL
+               FROM Messages JOIN People AS Author ON Messages.author=Author.id
+                               LEFT JOIN People AS Target ON Messages.target=Target.id
+                               ORDER BY created DESC LIMIT 50
+      </query>
+      <action>
+        <richlistitem uri="?" msgid="?id" type="?type" date="?date" text="?text" source="?source"
+                      author_id="?author_id" author_username="?author_username"
+                      author_name="?author_name" author_location="?author_location"
+                      author_description="?author_description" author_type="?author_type"
+                      author_imageURL="?author_imageURL" author_homeURL="?author_homeURL"
+                      target_id="?target_id" target_username="?target_username"
+                      target_name="?target_name" target_location="?target_location"
+                      target_description="?target_description" target_type="?target_type"
+                      target_imageURL="?target_imageURL" target_homeURL="?target_homeURL"/>
+      </action>
+    </template>
+  </richlistbox>
+  <statusbar/>
 </window>

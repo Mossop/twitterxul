@@ -47,6 +47,9 @@ const TYPE_STATUS = 0;
 const TYPE_REPLY = 1;
 const TYPE_DIRECT = 2;
 
+const TYPE_USER = 0;
+const TYPE_FRIEND = 1;
+
 function LOG(str) {
   dump("TwitterService.js: " + str + "\n");
 }
@@ -78,13 +81,14 @@ TwitterService.prototype = {
       return;
     }
 
-    this.refresh();
+    //this.refresh();
   },
 
   createSchema: function() {
     this.db.createTable("People",
       "id INTEGER PRIMARY KEY," +
       "username TEXT," +
+      "type INTEGER," +
       "name TEXT," +
       "location TEXT," +
       "description TEXT," +
@@ -167,20 +171,21 @@ TwitterService.prototype = {
       // A sparse record can't update anything to the database
       if (result)
         return;
-      stmt = this.db.createStatement("INSERT INTO People (id,username) VALUES (?,?)");
+      stmt = this.db.createStatement("INSERT INTO People (id,username,type) VALUES (?,?,?)");
       stmt.bindInt64Parameter(0, person.id);
       stmt.bindStringParameter(1, person.username);
+      stmt.bindInt64Parameter(2, person.username == this.username ? TYPE_USER : TYPE_FRIEND);
       stmt.execute();
       return;
     }
 
     if (result) {
       var str = "UPDATE People SET username=?,name=?,location=?," +
-                                  "description=?,imageURL=?,homeURL=? WHERE id=?";
+                                  "description=?,imageURL=?,homeURL=?,type=? WHERE id=?";
     }
     else {
       str = "INSERT INTO People (username,name,location,description,imageURL," +
-                                "homeURL,id) VALUES (?,?,?,?,?,?,?)";
+                                "homeURL,type,id) VALUES (?,?,?,?,?,?,?,?)";
     }
     stmt = this.db.createStatement(str);
     stmt.bindStringParameter(0, person.username);
@@ -189,7 +194,8 @@ TwitterService.prototype = {
     stmt.bindStringParameter(3, person.description);
     stmt.bindStringParameter(4, person.imageURL);
     stmt.bindStringParameter(5, person.homeURL);
-    stmt.bindInt64Parameter(6, person.id);
+    stmt.bindInt64Parameter(6, person.username == this.username ? TYPE_USER : TYPE_FRIEND);
+    stmt.bindInt64Parameter(7, person.id);
     stmt.execute();
   },
 
@@ -216,6 +222,16 @@ TwitterService.prototype = {
   },
 
   // twITwitterService implementation
+  get database() {
+    return this.db;
+  },
+
+  get username() {
+    var prefs = Cc["@mozilla.org/preferences-service;1"].
+                getService(Ci.nsIPrefBranch);
+    return prefs.getCharPref("twitter.username");
+  },
+
   refresh: function() {
     if (this.opCount)
       return;
@@ -249,7 +265,8 @@ TwitterService.prototype = {
   contractID: "@oxymoronical.com/twitterservice;1",
   classID: Components.ID("{08c3f4a6-60b0-41f7-a889-61ad916d7c67}"),
   _xpcom_categories: [{category: "profile-after-change"}],
-  QueryInterface: XPCOMUtils.generateQI([Ci.nsIObserver])
+  QueryInterface: XPCOMUtils.generateQI([Ci.twITwitterService,
+                                         Ci.nsIObserver])
 };
 
 function NSGetModule(compMgr, fileSpec)

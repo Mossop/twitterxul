@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 # ***** BEGIN LICENSE BLOCK *****
 # Version: MPL 1.1/GPL 2.0/LGPL 2.1
 #
@@ -34,18 +35,44 @@
 #
 # ***** END LICENSE BLOCK *****
 
-DEPTH     = ../../..
-topsrcdir = @top_srcdir@
-srcdir    = @srcdir@
-VPATH     = @srcdir@
+<bindings xmlns="http://www.mozilla.org/xbl"
+          xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+          xmlns:xbl="http://www.mozilla.org/xbl">
 
-include $(DEPTH)/config/autoconf.mk
+  <binding id="author">
+    <content>
+      <xul:label xbl:inherits="value=author"/>
+    </content>
+  </binding>
 
-MODULE    = $(MOZ_APP_NAME)
+  <binding id="received">
+    <content>
+      <xul:label value="From:"/><xul:label xbl:inherits="value=author"/>
+    </content>
+  </binding>
 
-XPIDLSRCS = \
-  twITwitter.idl \
-  twITwitterService.idl \
-  $(NULL)
+  <binding id="sent">
+    <content>
+      <xul:label value="To:"/><xul:label xbl:inherits="value=target"/>
+    </content>
+  </binding>
 
-include $(topsrcdir)/config/rules.mk
+  <binding id="status" extends="chrome://global/content/bindings/richlistbox.xml#richlistitem">
+    <content orient="horizontal">
+      <xul:image class="author-image" xbl:inherits="src=author_imageURL"/>
+      <xul:vbox flex="1">
+        <xul:hbox class="user" xbl:inherits="author=author_name, target=target_name"/>
+        <xul:description xbl:inherits="xbl:text=text"/>
+      </xul:vbox>
+      <xul:vbox>
+      </xul:vbox>
+    </content>
+  </binding>
+
+  <binding id="reply" extends="#status">
+  </binding>
+
+  <binding id="direct" extends="#status">
+  </binding>
+
+</bindings>
