@@ -1,6 +1,7 @@
 pref("toolkit.defaultChromeURI", "chrome://twitter/content");
 pref("toolkit.defaultChromeFeatures", "chrome,resizable,centerscreen,dialog=no");
 pref("toolkit.singletonWindowType", "Canary:Main");
+pref("browser.hiddenWindowChromeURL", "chrome://twitter/content/hiddenWindow.xul");
 pref("network.protocol-handler.expose-all", false);
 pref("network.protocol-handler.warn-external-default", false);
 

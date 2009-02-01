@@ -1,3 +1,4 @@
+/*
 # ***** BEGIN LICENSE BLOCK *****
 # Version: MPL 1.1/GPL 2.0/LGPL 2.1
 #
@@ -33,16 +34,39 @@
 # the terms of any one of the MPL, the GPL or the LGPL.
 #
 # ***** END LICENSE BLOCK *****
+*/
 
-add_makefiles "
-twitter/Makefile
-twitter/components/Makefile
-twitter/components/src/Makefile
-twitter/chrome/Makefile
-twitter/chrome/branding/Makefile
-twitter/chrome/content/Makefile
-twitter/chrome/locale/Makefile
-twitter/chrome/theme/Makefile
-twitter/app/Makefile
-twitter/installer/Makefile
-"
+const Cc = Components.classes;
+const Ci = Components.interfaces;
+const Cr = Components.results;
+
+Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
+
+function CommandLineHandler() {
+}
+
+CommandLineHandler.prototype = {
+  handle: function(commandLine) {
+    if (commandLine.state == Ci.nsICommandLine.STATE_INITIAL_LAUNCH) {
+      var appStartup = Cc["@mozilla.org/toolkit/app-startup;1"].
+                       getService(Ci.nsIAppStartup);
+      appStartup.enterLastWindowClosingSurvivalArea();
+      commandLine.preventDefault = true;
+    }
+  },
+
+  // XULRunner app command line handlers can't output help :(
+  helpInfo: "",
+
+  classDescription: "TwitterXUL Command Line Handler",
+  contractID: "@oxymoronical.com/taskhandler;1",
+  classID: Components.ID("{a18d7b0a-540e-466d-b5a4-88bebcb5594f}"),
+  _xpcom_categories: [{
+    category: "command-line-handler",
+    entry: "m-twitter",
+  }],
+  QueryInterface: XPCOMUtils.generateQI([Ci.nsICommandLineHandler])
+};
+
+function NSGetModule(compMgr, fileSpec)
+  XPCOMUtils.generateModule([CommandLineHandler]);

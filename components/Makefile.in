@@ -34,15 +34,13 @@
 #
 # ***** END LICENSE BLOCK *****
 
-add_makefiles "
-twitter/Makefile
-twitter/components/Makefile
-twitter/components/src/Makefile
-twitter/chrome/Makefile
-twitter/chrome/branding/Makefile
-twitter/chrome/content/Makefile
-twitter/chrome/locale/Makefile
-twitter/chrome/theme/Makefile
-twitter/app/Makefile
-twitter/installer/Makefile
-"
+DEPTH     = ../..
+topsrcdir = @top_srcdir@
+srcdir    = @srcdir@
+VPATH     = @srcdir@
+
+include $(DEPTH)/config/autoconf.mk
+
+DIRS = src
+
+include $(topsrcdir)/config/rules.mk

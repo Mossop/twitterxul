@@ -1,3 +1,4 @@
 twitter.jar:
 % content twitter %content/
 * content/twitter.xul
+* content/hiddenWindow.xul

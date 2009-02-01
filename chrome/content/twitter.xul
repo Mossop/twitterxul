@@ -45,8 +45,6 @@
 %windowDTD;
 ]>
 
-<window windowtype="Canary:Main" onload="startup()"
-        style="&window.style;" title="&window.title;"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+<window windowtype="Canary:Main" style="&window.style;" title="&window.title;"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 </window>
