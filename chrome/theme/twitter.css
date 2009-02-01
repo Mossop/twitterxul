@@ -10,6 +10,7 @@ richlistitem {
   margin: 3px;
   width: 48px;
   height: 48px;
+  list-style-image: url(chrome://global/skin/icons/loading_16.png);
 }
 
 .user {

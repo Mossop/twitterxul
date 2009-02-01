@@ -103,8 +103,20 @@ TwitterService.prototype = {
       return;
     }
 
-    if (this.user)
-      this.refresh();
+    if (this.user) {
+      try {
+        var next = this.prefs.getIntPref("lastUpdate");
+        next += this.refreshRate;
+        next -= Date.now() / 1000;
+        if (next <= 0)
+          this.refresh();
+        else
+          this.timer.init(this, next * 1000, Ci.nsITimer.TYPE_ONE_SHOT);
+      }
+      catch (e) {
+        this.refresh();
+      }
+    }
   },
 
   createSchema: function() {
@@ -247,6 +259,7 @@ TwitterService.prototype = {
       this.callListeners("onUpdateEnded");
       this.addedItems = null;
       this.timer.init(this, this.refreshRate * 1000, Ci.nsITimer.TYPE_ONE_SHOT);
+      this.prefs.setIntPref("lastUpdate", Date.now() / 1000);
     }
   },
 
