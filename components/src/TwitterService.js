@@ -238,8 +238,12 @@ TwitterService.prototype = {
 
     if (this.opCount == 0) {
       LOG("Retrieved " + this.addedItems.length + " items");
-      if (this.addedItems.length > 0)
+      if (this.addedItems.length > 0) {
+        this.addedItems.sort(function (a, b) {
+          return a.created - b.created;
+        });
         this.callListeners("onNewItemsAdded", this.addedItems, this.addedItems.length);
+      }
       this.callListeners("onUpdateEnded");
       this.addedItems = null;
       this.timer.init(this, this.refreshRate * 1000, Ci.nsITimer.TYPE_ONE_SHOT);

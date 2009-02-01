@@ -45,6 +45,46 @@
 %windowDTD;
 ]>
 
-<window windowtype="Canary:HiddenWindow"
+<window windowtype="Canary:HiddenWindow" onload="Startup()" onunload="Shutdown()"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+<script type="application/javascript">
+const Cc = Components.classes;
+const Ci = Components.interfaces;
+const Cr = Components.results;
+
+var UpdateListener = {
+  onUpdateStarted: function() {
+  },
+
+  onNewItemsAdded: function(items, count) {
+    var service = Cc["@oxymoronical.com/twitterservice;1"].
+                  getService(Ci.twITwitterService);
+    var alerts = Cc["@mozilla.org/alerts-service;1"].
+                 getService(Ci.nsIAlertsService);
+
+    items.forEach(function(item) {
+      if (item.author.username != service.username)
+        alerts.showAlertNotification(item.author.imageURL,
+                                     item.author.name,
+                                     item.text);
+    });
+  },
+
+  onUpdateEnded: function() {
+  }
+};
+
+function Startup() {
+  var service = Cc["@oxymoronical.com/twitterservice;1"].
+                getService(Ci.twITwitterService);
+  service.addUpdateListener(UpdateListener);
+}
+
+function Shutdown() {
+  var service = Cc["@oxymoronical.com/twitterservice;1"].
+                getService(Ci.twITwitterService);
+  service.removeUpdateListener(UpdateListener);
+}
+
+</script>
 </window>
