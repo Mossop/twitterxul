@@ -14,3 +14,11 @@ richlistitem {
   font-size: 120%;
   font-weight: bold;
 }
+
+#throbber {
+  list-style-image: url(chrome://global/skin/icons/notloading_16.png);
+}
+
+window[busy="true"] #throbber {
+  list-style-image: url(chrome://global/skin/icons/loading_16.png);
+}

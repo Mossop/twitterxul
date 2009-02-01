@@ -55,6 +55,7 @@ function LOG(str) {
 }
 
 function TwitterService() {
+  this.listeners = [];
 }
 
 TwitterService.prototype = {
@@ -62,6 +63,9 @@ TwitterService.prototype = {
   user: null,
   refreshRate: null,
   timer: null,
+  opCount: null,
+  addedItems: null,
+  listeners: null,
 
   startup: function() {
     this.timer = Cc["@mozilla.org/timer;1"].
@@ -218,8 +222,6 @@ TwitterService.prototype = {
     stmt.execute();
   },
 
-  opCount: null,
-  addedItems: null,
   twitterCallback: function(items, error) {
     this.opCount--;
     if (error) {
@@ -236,9 +238,24 @@ TwitterService.prototype = {
 
     if (this.opCount == 0) {
       LOG("Retrieved " + this.addedItems.length + " items");
+      if (this.addedItems.length > 0)
+        this.callListeners("onNewItemsAdded", this.addedItems, this.addedItems.length);
+      this.callListeners("onUpdateEnded");
       this.addedItems = null;
       this.timer.init(this, this.refreshRate * 1000, Ci.nsITimer.TYPE_ONE_SHOT);
     }
+  },
+
+  callListeners: function(method) {
+    var args = arguments;
+    this.listeners.forEach(function(listener) {
+      try {
+        listener[method].apply(listener, Array.splice(args, 1));
+      }
+      catch (e) {
+        LOG("Error calling update listener: " + e);
+      }
+    });
   },
 
   // twITwitterService implementation
@@ -262,6 +279,8 @@ TwitterService.prototype = {
 
     var pass = this.prefs.getCharPref("password");
 
+    this.callListeners("onUpdateStarted");
+
     this.addedItems = [];
     var self = this;
     var callback = function(items, error) {
@@ -271,6 +290,17 @@ TwitterService.prototype = {
     Twitter.fetchReceivedDirectMessages(this.user, pass, callback);
     Twitter.fetchSentDirectMessages(this.user, pass, callback);
     this.opCount += 3;
+  },
+
+  addUpdateListener: function(listener) {
+    if (!this.listeners.some(function(item) { return item == listener; }))
+      this.listeners.push(listener);
+  },
+
+  removeUpdateListener: function(listener) {
+    this.listeners = this.listeners.filter(function(item) {
+      return item != listener;
+    });
   },
 
   // nsIObserver implementation

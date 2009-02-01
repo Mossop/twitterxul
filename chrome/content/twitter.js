@@ -40,6 +40,33 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cr = Components.results;
 
+var UpdateListener = {
+  onUpdateStarted: function() {
+    document.documentElement.setAttribute("busy", "true");
+  },
+
+  onNewItemsAdded: function(items, count) {
+    document.getElementById("statuslist").builder.rebuild();
+  },
+
+  onUpdateEnded: function() {
+    document.documentElement.setAttribute("busy", "false");
+  }
+};
+
+function Startup() {
+  var service = Cc["@oxymoronical.com/twitterservice;1"].
+                getService(Ci.twITwitterService);
+  document.documentElement.setAttribute("busy", service.busy ? "true" : "false");
+  service.addUpdateListener(UpdateListener);
+}
+
+function Shutdown() {
+  var service = Cc["@oxymoronical.com/twitterservice;1"].
+                getService(Ci.twITwitterService);
+  service.removeUpdateListener(UpdateListener);
+}
+
 // If a window with the type exists just focus it otherwise open a new window
 function openWindowForType(type, uri, features) {
   var topWindow = Cc['@mozilla.org/appshell/window-mediator;1'].

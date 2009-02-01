@@ -37,6 +37,17 @@
 #include "nsISupports.idl"
 
 interface mozIStorageConnection;
+interface twIMessage;
+
+[scriptable, uuid(8ec2f337-2bf8-4ad2-8a87-b82b8ca7f5c5)]
+interface twITwitterUpdateListener : nsISupports
+{
+  void onUpdateStarted();
+
+  void onNewItemsAdded([array, size_is(itemCount)] in twIMessage items, in unsigned long itemCount);
+
+  void onUpdateEnded();
+};
 
 /**
  * The main interface to the background service
@@ -49,6 +60,10 @@ interface twITwitterService : nsISupports
   readonly attribute AString username;
 
   readonly attribute mozIStorageConnection database;
+
+  void addUpdateListener(in twITwitterUpdateListener listener);
+
+  void removeUpdateListener(in twITwitterUpdateListener listener);
 
   void refresh();
 };

@@ -47,7 +47,8 @@
 ]>
 
 <window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-        windowtype="Canary:Main" style="&window.style;" title="&window.title;">
+        windowtype="Canary:Main" style="&window.style;" title="&window.title;"
+        onload="Startup()" onunload="Shutdown()">
 
   <script type="application/javascript" src="twitter.js"/>
 
@@ -117,5 +118,9 @@
       </action>
     </template>
   </richlistbox>
-  <statusbar/>
+  <statusbar>
+    <spacer flex="1"/>
+    <statusbarpanel id="throbber" class="statusbarpanel-iconic"/>
+    <resizer/>
+  </statusbar>
 </window>
