@@ -1,0 +1,5 @@
+#filter substitution
+
+@AB_CD@.jar:
+% locale twitter @AB_CD@ %
+  twitter.dtd                          (@AB_CD@/twitter.dtd)
