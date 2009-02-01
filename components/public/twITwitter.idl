@@ -1,0 +1,83 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * The Original Code is TwitterXUL.
+ *
+ * The Initial Developer of the Original Code is
+ * Dave Townsend <dtownsend@oxymoronical.com>
+ * Portions created by the Initial Developer are Copyright (C) 2009
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Contributor(s):
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either the GNU General Public License Version 2 or later (the "GPL"), or
+ * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
+
+#include "nsISupports.idl"
+
+/**
+ * Represents a Twitter user
+ */
+[scriptable, uuid(308412c3-a576-4a3d-a69b-e482a246e5f5)]
+interface twIPerson : nsISupports
+{
+  readonly attribute PRUint64 id;
+  readonly attribute AString username;
+  readonly attribute AString name;
+  readonly attribute AString location;
+  readonly attribute AString description;
+  readonly attribute AString imageURL;
+  readonly attribute AString homeURL;
+};
+
+/**
+ * Represents a Twitter message
+ */
+[scriptable, uuid(5266e6fc-8ecc-47c7-b2b1-2fb83614cff9)]
+interface twIMessage : nsISupports
+{
+  readonly attribute PRUint64 id;
+  readonly attribute PRUint64 created;
+  readonly attribute twIPerson author;
+  readonly attribute AString text;
+  readonly attribute AString source;
+};
+
+/**
+ * Represents a Twitter reply
+ */
+[scriptable, uuid(ebabc46b-28f8-4b89-9586-e1a6d9f5ee68)]
+interface twIReply : twIMessage
+{
+  readonly attribute twIPerson inReplyTo;
+};
+
+/**
+ * Represents a Twitter reply
+ */
+[scriptable, uuid(5708f459-7e53-4a8d-8f21-ac1ff493bc58)]
+interface twIDirectMessage : twIMessage
+{
+  readonly attribute twIPerson recipient;
+};

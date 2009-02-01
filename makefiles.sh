@@ -38,6 +38,8 @@ add_makefiles "
 twitter/Makefile
 twitter/components/Makefile
 twitter/components/src/Makefile
+twitter/components/public/Makefile
+twitter/modules/public/Makefile
 twitter/chrome/Makefile
 twitter/chrome/branding/Makefile
 twitter/chrome/content/Makefile

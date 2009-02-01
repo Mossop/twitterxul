@@ -1,3 +1,4 @@
+/*
 # ***** BEGIN LICENSE BLOCK *****
 # Version: MPL 1.1/GPL 2.0/LGPL 2.1
 #
@@ -33,17 +34,42 @@
 # the terms of any one of the MPL, the GPL or the LGPL.
 #
 # ***** END LICENSE BLOCK *****
+*/
 
-DEPTH     = ../../..
-topsrcdir = @top_srcdir@
-srcdir    = @srcdir@
-VPATH     = @srcdir@
+const Cc = Components.classes;
+const Ci = Components.interfaces;
+const Cr = Components.results;
 
-include $(DEPTH)/config/autoconf.mk
+Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
+Components.utils.import("resource:///modules/Twitter.jsm");
 
-EXTRA_PP_COMPONENTS = \
-  CLHandler.js \
-  TwitterService.js \
-  $(NULL)
+function LOG(str) {
+  dump("TwitterService.js: " + str + "\n");
+}
 
-include $(topsrcdir)/config/rules.mk
+function TwitterService() {
+}
+
+TwitterService.prototype = {
+  startup: function() {
+  },
+
+  // nsIObserver implementation
+  observe: function(subject, topic, data) {
+    LOG(topic);
+    switch (topic) {
+    case "profile-after-change":
+      this.startup();
+      break;
+    }
+  },
+
+  classDescription: "TwitterXUL Background Service",
+  contractID: "@oxymoronical.com/twitterservice;1",
+  classID: Components.ID("{08c3f4a6-60b0-41f7-a889-61ad916d7c67}"),
+  _xpcom_categories: [{category: "profile-after-change"}],
+  QueryInterface: XPCOMUtils.generateQI([Ci.nsIObserver])
+};
+
+function NSGetModule(compMgr, fileSpec)
+  XPCOMUtils.generateModule([TwitterService]);
