@@ -59,8 +59,26 @@ function TwitterService() {
 
 TwitterService.prototype = {
   db: null,
+  user: null,
+  refreshRate: null,
+  timer: null,
 
   startup: function() {
+    this.timer = Cc["@mozilla.org/timer;1"].
+                 createInstance(Ci.nsITimer);
+
+    this.prefs = Cc["@mozilla.org/preferences-service;1"].
+                 getService(Ci.nsIPrefService).
+                 getBranch("twitter.").
+                 QueryInterface(Ci.nsIPrefBranch2);
+    this.prefs.addObserver("", this, false);
+    try {
+      this.user = this.prefs.getCharPref("username");
+    }
+    catch (e) {
+    }
+    this.refreshRate = this.prefs.getIntPref("refreshRate");
+
     var dbfile = Cc["@mozilla.org/file/directory_service;1"].
                  getService(Ci.nsIProperties).
                  get("ProfD", Ci.nsIFile);
@@ -81,7 +99,8 @@ TwitterService.prototype = {
       return;
     }
 
-    //this.refresh();
+    if (this.user)
+      this.refresh();
   },
 
   createSchema: function() {
@@ -218,6 +237,7 @@ TwitterService.prototype = {
     if (this.opCount == 0) {
       LOG("Retrieved " + this.addedItems.length + " items");
       this.addedItems = null;
+      this.timer.init(this, this.refreshRate * 1000, Ci.nsITimer.TYPE_ONE_SHOT);
     }
   },
 
@@ -226,29 +246,30 @@ TwitterService.prototype = {
     return this.db;
   },
 
+  get busy() {
+    return this.opCount > 0;
+  },
+
   get username() {
-    var prefs = Cc["@mozilla.org/preferences-service;1"].
-                getService(Ci.nsIPrefBranch);
-    return prefs.getCharPref("twitter.username");
+    return this.user;
   },
 
   refresh: function() {
     if (this.opCount)
       return;
 
-    var prefs = Cc["@mozilla.org/preferences-service;1"].
-                getService(Ci.nsIPrefBranch);
-    var user = prefs.getCharPref("twitter.username");
-    var pass = prefs.getCharPref("twitter.password");
+    this.timer.cancel();
+
+    var pass = this.prefs.getCharPref("password");
 
     this.addedItems = [];
     var self = this;
     var callback = function(items, error) {
       self.twitterCallback(items, error);
     }
-    Twitter.fetchFriendsTimeline(user, pass, callback);
-    Twitter.fetchReceivedDirectMessages(user, pass, callback);
-    Twitter.fetchSentDirectMessages(user, pass, callback);
+    Twitter.fetchFriendsTimeline(this.user, pass, callback);
+    Twitter.fetchReceivedDirectMessages(this.user, pass, callback);
+    Twitter.fetchSentDirectMessages(this.user, pass, callback);
     this.opCount += 3;
   },
 
@@ -257,6 +278,25 @@ TwitterService.prototype = {
     switch (topic) {
     case "profile-after-change":
       this.startup();
+      break;
+    case "timer-callback":
+      this.refresh();
+      break;
+    case "nsPref:changed":
+      switch (data) {
+      case "username":
+        var olduser = this.user;
+        this.user = this.prefs.getCharPref("username");
+        if (!olduser || (this.user.toLowerCase() != olduser.toLowerCase())) {
+          this.db.createStatement("DELETE FROM People").execute();
+          this.db.createStatement("DELETE FROM Messages").execute();
+          this.refresh();
+        }
+        break;
+      case "refreshRate":
+        this.refreshRate = this.prefs.getIntPref("refreshRate");
+        break;
+      }
       break;
     }
   },

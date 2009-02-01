@@ -44,6 +44,10 @@ interface mozIStorageConnection;
 [scriptable, uuid(c7720cbf-bddf-4a9b-8269-6875f1da972a)]
 interface twITwitterService : nsISupports
 {
+  readonly attribute boolean busy;
+
+  readonly attribute AString username;
+
   readonly attribute mozIStorageConnection database;
 
   void refresh();
