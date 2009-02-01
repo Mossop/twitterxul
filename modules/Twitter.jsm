@@ -177,7 +177,7 @@ Reply.prototype._parse = function(item) {
   Status.prototype._parse.call(this, item);
   this.inReplyTo = new Person();
   this.inReplyTo.id = item.in_reply_to_user_id;
-  this.inReplyTo.username = item.in_reply_to_user_id;
+  this.inReplyTo.username = item.in_reply_to_screen_name;
 };
 Reply.prototype.QueryInterface = XPCOMUtils.generateQI([Ci.twIReply,
                                                         Ci.twIMessage]);
