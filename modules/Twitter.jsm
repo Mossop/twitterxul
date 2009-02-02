@@ -48,6 +48,7 @@ function LOG(str) {
 
 var EXPORTED_SYMBOLS = [ "Twitter" ];
 
+// Protects a call to an unknown function
 function safecall(callback) {
   try {
     callback.apply(null, Array.splice(arguments, 1));
@@ -57,6 +58,8 @@ function safecall(callback) {
   }
 }
 
+// The Authenticator deals with responding to authentication requests from the
+// Twitter request. It should be set as the notificationCallbacks on the channel.
 function Authenticator(username, password) {
   this.username = username;
   this.password = password;
@@ -105,6 +108,7 @@ Authenticator.prototype = {
                                          Ci.nsIInterfaceRequestor])
 };
 
+// A twIPerson implementation
 function Person() {
 }
 
@@ -130,6 +134,7 @@ Person.prototype = {
   QueryInterface: XPCOMUtils.generateQI([Ci.twIPerson])
 }
 
+// A twIMessage implementation
 function Status() {
 }
 
@@ -165,6 +170,7 @@ Status.prototype = {
   QueryInterface: XPCOMUtils.generateQI([Ci.twIMessage])
 };
 
+// A twIReply implementation
 function Reply() {
 }
 
@@ -182,6 +188,7 @@ Reply.prototype._parse = function(item) {
 Reply.prototype.QueryInterface = XPCOMUtils.generateQI([Ci.twIReply,
                                                         Ci.twIMessage]);
 
+// A twIDirectMessage implementation
 function DirectMessage() {
 }
 
@@ -198,6 +205,8 @@ DirectMessage.prototype._parse = function(item) {
 DirectMessage.prototype.QueryInterface = XPCOMUtils.generateQI([Ci.twIDirectMessage,
                                                                 Ci.twIMessage]);
 
+// Parsers are responsible for parsing the json stream returned from Twitter.
+// Then should all extend this abstract implementation and implement parseData.
 function Parser(callback) {
   this.callback = callback;
 }
@@ -205,10 +214,12 @@ function Parser(callback) {
 Parser.prototype = {
   callback: null,
 
+  // Should be implemented by specific implementations
   parseData: function(json) {
     LOG("Should never get here");
   },
 
+  // Called when the http request completes
   onLoad: function(event) {
     var request = event.target;
     if (request.status != 200) {
@@ -240,11 +251,14 @@ Parser.prototype = {
     }
   },
 
+  // Called when the http request fails
   onError: function(event) {
     LOG("Request failed: " + event.target.statusText);
     safecall(this.callback, null, event.target.statusText);
   },
 
+  // Starts a new request.
+  // TODO maybe move this to the constructor?
   startRequest: function(username, password, url) {
     LOG("Requesting " + url);
     var request = Cc["@mozilla.org/xmlextras/xmlhttprequest;1"].
@@ -258,6 +272,7 @@ Parser.prototype = {
   }
 };
 
+// A Parser for regular status updates
 function TimelineParser(callback) {
   Parser.call(this, callback);
 }
@@ -282,6 +297,7 @@ TimelineParser.prototype.parseData = function(items) {
   return results;
 };
 
+// A Parser for direct messages
 function DirectMessageParser(callback) {
   Parser.call(this, callback);
 }
@@ -302,7 +318,19 @@ DirectMessageParser.prototype.parseData = function(items) {
   return results;
 };
 
+// The public interface starts here
 var Twitter = {
+  /**
+   * Sends a direct message to a specified user.
+   * @param username
+   *        The Twitter username to send from.
+   * @param password
+   *        The password of the user to send from.
+   * @param recipient
+   *        The username of the user to send to.
+   * @param text
+   *        The text of the message to send.
+   */
   sendDirectMessage: function(username, password, recipient, text) {
     var url = "http://twitter.com/direct_messages/new.json?user=" + recipient + "&text=" + encodeURIComponent(text);
     LOG("Requesting " + url);
@@ -320,6 +348,15 @@ var Twitter = {
     request.send(null);
   },
 
+  /**
+   * Sets the status message for a user.
+   * @param username
+   *        The Twitter username to set the status of.
+   * @param password
+   *        The password of the user to set the status of.
+   * @param status
+   *        The text of the status message.
+   */
   setStatus: function(username, password, status) {
     var url = "http://twitter.com/statuses/update.json?status=" + encodeURIComponent(status);
     LOG("Requesting " + url);
@@ -337,21 +374,77 @@ var Twitter = {
     request.send(null);
   },
 
+  /**
+   * Retrieves the direct messages sent by a user.
+   * @param username
+   *        The Twitter username to get the messages for.
+   * @param password
+   *        The password of the user.
+   * @param callback
+   *        A callback to call when the request finishes. It should expect two
+   *        arguments. The first is an array of the twIMessage items retrieved.
+   *        The second is any error that occured during the request. Only
+   *        one of the arguments will be non-null.
+   * @param since
+   *        Unused.
+   */
   fetchSentDirectMessages: function(username, password, callback, since) {
     var parser = new DirectMessageParser(callback);
     parser.startRequest(username, password, "http://twitter.com/direct_messages/sent.json");
   },
 
+  /**
+   * Retrieves the direct messages received by a user.
+   * @param username
+   *        The Twitter username to get the messages for.
+   * @param password
+   *        The password of the user.
+   * @param callback
+   *        A callback to call when the request finishes. It should expect two
+   *        arguments. The first is an array of the twIMessage items retrieved.
+   *        The second is any error that occured during the request. Only
+   *        one of the arguments will be non-null.
+   * @param since
+   *        Unused.
+   */
   fetchReceivedDirectMessages: function(username, password, callback, since) {
     var parser = new DirectMessageParser(callback);
     parser.startRequest(username, password, "http://twitter.com/direct_messages.json");
   },
 
+  /**
+   * Retrieves the status messages set by a user.
+   * @param username
+   *        The Twitter username to get the messages for.
+   * @param password
+   *        The password of the user.
+   * @param callback
+   *        A callback to call when the request finishes. It should expect two
+   *        arguments. The first is an array of the twIMessage items retrieved.
+   *        The second is any error that occured during the request. Only
+   *        one of the arguments will be non-null.
+   * @param since
+   *        Unused.
+   */
   fetchUserTimeline: function(username, password, callback, since) {
     var parser = new TimelineParser(callback);
     parser.startRequest(username, password, "http://twitter.com/statuses/user_timeline.json");
   },
 
+  /**
+   * Retrieves the status messages set by a user and the users they follow.
+   * @param username
+   *        The Twitter username to get the messages for.
+   * @param password
+   *        The password of the user.
+   * @param callback
+   *        A callback to call when the request finishes. It should expect two
+   *        arguments. The first is an array of the twIMessage items retrieved.
+   *        The second is any error that occured during the request. Only
+   *        one of the arguments will be non-null.
+   * @param since
+   *        Unused.
+   */
   fetchFriendsTimeline: function(username, password, callback, since) {
     var parser = new TimelineParser(callback);
     parser.startRequest(username, password, "http://twitter.com/statuses/friends_timeline.json");

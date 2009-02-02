@@ -47,6 +47,8 @@ function CommandLineHandler() {
 
 CommandLineHandler.prototype = {
   handle: function(commandLine) {
+    // For the initial launch tell the application that it should remain
+    // open despite the absence of a main window.
     if (commandLine.state == Ci.nsICommandLine.STATE_INITIAL_LAUNCH) {
       var appStartup = Cc["@mozilla.org/toolkit/app-startup;1"].
                        getService(Ci.nsIAppStartup);

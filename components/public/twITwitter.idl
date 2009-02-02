@@ -81,13 +81,3 @@ interface twIDirectMessage : twIMessage
 {
   readonly attribute twIPerson recipient;
 };
-
-[scriptable, uuid(ef8f7e4b-c024-4b99-acf9-16e130b31033)]
-interface twIReceivedDirectMessage : twIDirectMessage
-{
-};
-
-[scriptable, uuid(e319c40d-e497-4b53-bad9-ab494363acac)]
-interface twISentDirectMessage : twIDirectMessage
-{
-};

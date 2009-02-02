@@ -71,17 +71,23 @@
     <implementation>
       <constructor>
       <![CDATA[
+        // Format the title based on the message type and recipient
         if (this.type == 2) {
           var strings = document.getElementById("main-strings");
           if (this.getAttribute("author_type") == 0)
-            this.setAttribute("title", strings.getFormattedString("directmessage.sent.title", [this.getAttribute("target_name")]));
+            this.setAttribute("title",
+                              strings.getFormattedString("directmessage.sent.title",
+                                                         [this.getAttribute("target_name")]));
           else
-            this.setAttribute("title", strings.getFormattedString("directmessage.received.title", [this.getAttribute("author_name")]));
+            this.setAttribute("title",
+                              strings.getFormattedString("directmessage.received.title",
+                                                         [this.getAttribute("author_name")]));
         }
         else {
           this.setAttribute("title", this.getAttribute("author_name"));
         }
 
+        // Linkify @username and things that look like web links
         var urlreg = new RegExp("(^|[\\.,\\(\\s])((?:http|https|ftp):\\/\\/\\S+)([,\\.\\)]?)");
         var userreg = new RegExp("(^|[\\(\\s])@(\\S+)([,\\.\\)]?)");
         var text = this.getAttribute("text");

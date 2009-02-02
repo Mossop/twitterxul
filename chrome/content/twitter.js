@@ -60,8 +60,11 @@ function openWindowForType(type, uri, features) {
     window.open(uri, "_blank", "chrome,extrachrome,menubar,resizable,scrollbars,status,toolbar");
 }
 
+// A regex to detect "d <username> <message>"
 var gDirectMessage = /^d\s+(\S*)\s+(.*)/;
 
+// The update listener updates the throbber and rebuilds the status list if
+// new items have been added.
 var UpdateListener = {
   onUpdateStarted: function() {
     document.documentElement.setAttribute("busy", "true");
@@ -78,28 +81,35 @@ var UpdateListener = {
   }
 };
 
+// Called during window open
 function onStartup() {
   var service = Cc["@oxymoronical.com/twitterservice;1"].
                 getService(Ci.twITwitterService);
   document.documentElement.setAttribute("busy", service.busy ? "true" : "false");
   document.getElementById("refresh-button").disabled = service.busy;
   service.addUpdateListener(UpdateListener);
+
+  // Reusing the same database connection is much faster
   document.getElementById("status-list").builder.datasource = service.database;
 }
 
+// Called during window close
 function onShutdown() {
   var service = Cc["@oxymoronical.com/twitterservice;1"].
                 getService(Ci.twITwitterService);
   service.removeUpdateListener(UpdateListener);
 }
 
+// Called to refresh the status list
 function refresh() {
   var service = Cc["@oxymoronical.com/twitterservice;1"].
                 getService(Ci.twITwitterService);
   service.refresh();
 }
 
+// Called by a click on a reply button in the list
 function replyTo(item) {
+  // For now just replace the existing text with a new message
   var messageBox = document.getElementById("message-textbox");
   if (item.getAttribute("type") == 2)
     messageBox.value = "d " + item.getAttribute("author_username") + " ";
@@ -112,6 +122,7 @@ function replyTo(item) {
   afterKeyPressed();
 }
 
+// Called to send the current contents of the message to Twitter
 function sendMessage() {
   var service = Cc["@oxymoronical.com/twitterservice;1"].
                 getService(Ci.twITwitterService);
@@ -129,12 +140,14 @@ function sendMessage() {
   afterKeyPressed();
 }
 
+// Update the UI state based on what is in the message box
 function afterKeyPressed(event) {
   var text = document.getElementById("message-textbox").value;
   document.getElementById("send-button").disabled = text == "";
   document.getElementById("count-label").value = 140 - text.length;
 }
 
+// Sends the message when return is pressed
 function onKeyPressed(event) {
   if (event.keyCode == Ci.nsIDOMKeyEvent.DOM_VK_RETURN) {
     sendMessage();
@@ -143,6 +156,7 @@ function onKeyPressed(event) {
   return true;
 }
 
+// Updates the check for updates menu item based on the current update state
 function buildHelpMenu()
 {
   var updates = Cc["@mozilla.org/updates/update-service;1"].
@@ -193,9 +207,7 @@ function buildHelpMenu()
     checkForUpdates.removeAttribute("loading");
 }
 
-/**
- * Opens the update manager and checks for updates to the application.
- */
+// Opens the update manager and checks for updates to the application.
 function openUpdates()
 {
   var um = Cc["@mozilla.org/updates/update-manager;1"].
@@ -212,26 +224,30 @@ function openUpdates()
     prompter.checkForUpdates();
 }
 
+// Opens the add-ons manager
 function openAddons() {
   openWindowForType("Extension:Manager",
                     "chrome://mozapps/content/extensions/extensions.xul");
 }
 
+// Opens the error console
 function openErrorConsole() {
   openWindowForType("global:console", "chrome://global/content/console.xul");
 }
 
+// Opens about:config
 function openConfig() {
   openWindowForType("Preferences:ConfigManager", "chrome://global/content/config.xul");
 }
 
+// Opens the DOM Inspector
 function openDOMInspector() {
   window.openDialog("chrome://inspector/content/", "_blank",
                     "chrome,all,dialog=no", document);
 }
 
+// Opens the about dialog
 function openAbout() {
   openWindowForType("Twitter:About", "chrome://twitter/content/about.xul",
                     "chrome,dialog,centerscreen");
 }
-

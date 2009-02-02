@@ -39,32 +39,84 @@
 interface mozIStorageConnection;
 interface twIMessage;
 
+/**
+ * Any registered update listener will be called during the background refresh
+ * process to hear about the start and end of the update as well as any new
+ * status messages discovered.
+ */
 [scriptable, uuid(8ec2f337-2bf8-4ad2-8a87-b82b8ca7f5c5)]
 interface twITwitterUpdateListener : nsISupports
 {
+  /**
+   * Called when the refresh process begins.
+   */
   void onUpdateStarted();
 
+  /**
+   * Called at the end of the refresh process if any new items were discovered.
+   * Will be called before onUpdateEnded and may not be called at all.
+   * @param items
+   *        an array of new status messages retrieved.
+   * @param itemCount
+   *        the number of new status messages retrieved.
+   */
   void onNewItemsAdded([array, size_is(itemCount)] in twIMessage items, in unsigned long itemCount);
 
+  /**
+   * Called when the refresh process ends.
+   */
   void onUpdateEnded();
 };
 
 /**
- * The main interface to the background service
+ * The background service automatically checks for new status messages from
+ * Twitter at a rate specified by preferences. Listeners can be registered to
+ * hear about the refreshes and the database of status messages can be accessed
+ * through this interface.
  */
 [scriptable, uuid(c7720cbf-bddf-4a9b-8269-6875f1da972a)]
 interface twITwitterService : nsISupports
 {
+  /**
+   * Indicates whether a background refresh is currently in progress
+   */
   readonly attribute boolean busy;
 
+  /**
+   * The current Twitter username
+   */
   readonly attribute AString username;
+  /**
+   * The current Twitter password
+   * TODO remove this from the interface
+   */
   readonly attribute AString password;
 
+  /**
+   * The database of status updates.
+   */
   readonly attribute mozIStorageConnection database;
 
+  /**
+   * Registers a new update listener to hear about background refresh events.
+   * This is a no-op if the listener is already registered.
+   * @param listener
+   *        The new listener to register.
+   */
   void addUpdateListener(in twITwitterUpdateListener listener);
 
+  /**
+   * Unregisters an update listener. This is a no-op if the listener is not
+   * already registered.
+   * @param listener
+   *        The listener to unregister.
+   */
   void removeUpdateListener(in twITwitterUpdateListener listener);
 
+  /**
+   * Requests an immediate refresh of the status messages. This is a no-op if
+   * there is already a refresh in progress or if the username has not yet
+   * been set.
+   */
   void refresh();
 };

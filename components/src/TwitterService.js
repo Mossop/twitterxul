@@ -43,12 +43,14 @@ const Cr = Components.results;
 Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
 Components.utils.import("resource:///modules/Twitter.jsm");
 
+// Message types
 const TYPE_STATUS = 0;
 const TYPE_REPLY = 1;
 const TYPE_DIRECT = 2;
 
+// Person types
 const TYPE_USER = 0;
-const TYPE_FRIEND = 1;
+const TYPE_FRIEND = 1;  // This is not really friend, just not the current user
 
 function LOG(str) {
   dump("TwitterService.js: " + str + "\n");
@@ -59,12 +61,19 @@ function TwitterService() {
 }
 
 TwitterService.prototype = {
+  // The db connection
   db: null,
+  // The current username
   user: null,
+  // The refreshrate in seconds
   refreshRate: null,
+  // An XPCOM timer used to trigger refreshes
   timer: null,
+  // The current number of Twitter requests waiting to be heard back from
   opCount: null,
+  // An array of items added during the current refresh
   addedItems: null,
+  // The registered update listeners
   listeners: null,
 
   startup: function() {
@@ -99,6 +108,8 @@ TwitterService.prototype = {
     case 1:
       break;
     default:
+      // TODO figure out something smart to do here, probably wipe the db and
+      // start again
       LOG("Unknown database schema " + this.db.schemaVersion);
       return;
     }
@@ -114,11 +125,13 @@ TwitterService.prototype = {
           this.timer.init(this, next * 1000, Ci.nsITimer.TYPE_ONE_SHOT);
       }
       catch (e) {
+        // We'll get here if the lastUpdate pref hasn't been set yet
         this.refresh();
       }
     }
   },
 
+  // Creates the database
   createSchema: function() {
     this.db.createTable("People",
       "id INTEGER PRIMARY KEY," +
@@ -141,6 +154,7 @@ TwitterService.prototype = {
     this.db.schemaVersion = 1;
   },
 
+  // Gets a type number for a twIMessage
   getTypeForMessage: function(message) {
     try {
       if (message.QueryInterface(Ci.twIDirectMessage))
@@ -153,6 +167,7 @@ TwitterService.prototype = {
     return TYPE_STATUS;
   },
 
+  // Tests whether a given twIMessage exists in the database
   isMessageInDatabase: function(message) {
     var stmt = this.db.createStatement("SELECT id FROM Messages WHERE id=? AND type=?");
     stmt.bindInt64Parameter(0, message.id);
@@ -162,6 +177,7 @@ TwitterService.prototype = {
     return result;
   },
 
+  // Adds a twIMessage to the database, it should not be there already
   addMessageToDatabase: function(message) {
     var type = this.getTypeForMessage(message);
     var cols = "id,type,created,author,text,source";
@@ -196,14 +212,16 @@ TwitterService.prototype = {
     stmt.execute();
   },
 
+  // Adds a twIPerson to the database or updates their details there
   addPersonToDatabase: function(person) {
     var stmt = this.db.createStatement("SELECT id FROM People WHERE id=?");
     stmt.bindInt64Parameter(0, person.id);
     var result = stmt.executeStep();
     stmt.reset();
 
+    // Some twiPerson objects will only have id and username set
     if (!person.name) {
-      // A sparse record can't update anything to the database
+      // If the person is already in the db then there isn't anything to update
       if (result)
         return;
       stmt = this.db.createStatement("INSERT INTO People (id,username,type) VALUES (?,?,?)");
@@ -234,10 +252,12 @@ TwitterService.prototype = {
     stmt.execute();
   },
 
+  // This callback is called for every Twitter request we make
   twitterCallback: function(items, error) {
     this.opCount--;
     if (error) {
       LOG("Error getting items: " + error);
+      // TODO propogate this to the listeners in some way
     }
     else {
       items.forEach(function(item) {
@@ -263,6 +283,7 @@ TwitterService.prototype = {
     }
   },
 
+  // This calls all the registered listeners protecting against any exceptions
   callListeners: function(method) {
     var args = Array.splice(arguments, 1);
     this.listeners.forEach(function(listener) {
@@ -328,6 +349,7 @@ TwitterService.prototype = {
   observe: function(subject, topic, data) {
     switch (topic) {
     case "profile-after-change":
+      // TODO move startup to final-ui-startup
       this.startup();
       break;
     case "timer-callback":
