@@ -53,6 +53,14 @@ richlistitem[type="2"] .image-overlay {
   font-weight: bold;
 }
 
+.text {
+  cursor: default;
+}
+
+.text a {
+  color: blue;
+}
+
 .buttons {
   margin-left: 5px;
 }
