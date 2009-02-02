@@ -52,6 +52,8 @@
 
   <script type="application/javascript" src="twitter.js"/>
 
+  <stringbundle id="strings" src="chrome://twitter/locale/twitter.properties"/>
+
   <menubar>
     <menu id="toolsMenu" label="&toolsMenu.label;" accesskey="&toolsMenu.accesskey;">
       <menupopup>
