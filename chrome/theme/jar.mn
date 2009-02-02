@@ -1,3 +1,7 @@
 classic.jar:
 % skin twitter classic/1.0 %
   twitter.css
+  message.png
+  message-reply.png
+  refresh.png
+  reply.png

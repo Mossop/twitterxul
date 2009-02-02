@@ -1,3 +1,11 @@
+#refresh {
+  list-style-image: url(chrome://twitter/skin/refresh.png);
+}
+
+#refresh .toolbarbutton-text {
+  display: none;
+}
+
 richlistbox {
   margin: 0;
   border: 0px none;
@@ -9,11 +17,23 @@ richlistitem {
   padding: 5px;
 }
 
+richlistitem[type="1"][target_type="0"] {
+  background-color: #fce94f;
+}
+
+richlistitem[type="2"][target_type="0"] {
+  background-color: #ad7fa8;
+}
+
+richlistitem[type="2"][author_type="0"] {
+  background-color: #8ae234;
+}
+
 .author-image {
   margin-right: 5px;
   width: 48px;
   height: 48px;
-  list-style-image: url(chrome://global/skin/icons/loading_16.png);
+  -moz-border-radius: 5px;
 }
 
 .user {
@@ -31,11 +51,15 @@ richlistitem {
   height: 16px;
   min-width: 0;
   min-height: 0;
-  background-color: black;
+  list-style-image: url(chrome://twitter/skin/reply.png);
 }
 
 .reply .button-text {
   display: none;
+}
+
+richlistitem[type="2"] .reply {
+  list-style-image: url(chrome://twitter/skin/message-reply.png);
 }
 
 richlistitem[author_type="0"] .reply {
