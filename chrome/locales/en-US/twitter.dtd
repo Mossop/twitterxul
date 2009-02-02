@@ -22,3 +22,5 @@
 <!ENTITY update.accesskey                "C">
 <!ENTITY about.label                     "About &brandShortName;">
 <!ENTITY about.accesskey                 "A">
+
+<!ENTITY send.label                      "Send">

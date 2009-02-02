@@ -304,9 +304,37 @@ DirectMessageParser.prototype.parseData = function(items) {
 
 var Twitter = {
   sendDirectMessage: function(username, password, recipient, text) {
+    var url = "http://twitter.com/direct_messages/new.json?user=" + recipient + "&text=" + encodeURIComponent(text);
+    LOG("Requesting " + url);
+    var request = Cc["@mozilla.org/xmlextras/xmlhttprequest;1"].
+                  createInstance(Ci.nsIXMLHttpRequest);
+    request.open("POST", url, true);
+    request.channel.notificationCallbacks = new Authenticator(username, password);
+    request.onload = function(event) {
+      if (event.target.status != 200)
+        LOG("Request failed: " + event.target.statusText);
+    };
+    request.onerror = function(event) {
+      LOG("Request failed: " + event.target.statusText);
+    };
+    request.send(null);
   },
 
   setStatus: function(username, password, status) {
+    var url = "http://twitter.com/statuses/update.json?status=" + encodeURIComponent(status);
+    LOG("Requesting " + url);
+    var request = Cc["@mozilla.org/xmlextras/xmlhttprequest;1"].
+                  createInstance(Ci.nsIXMLHttpRequest);
+    request.open("POST", url, true);
+    request.channel.notificationCallbacks = new Authenticator(username, password);
+    request.onload = function(event) {
+      if (event.target.status != 200)
+        LOG("Request failed: " + event.target.statusText);
+    };
+    request.onerror = function(event) {
+      LOG("Request failed: " + event.target.statusText);
+    };
+    request.send(null);
   },
 
   fetchSentDirectMessages: function(username, password, callback, since) {

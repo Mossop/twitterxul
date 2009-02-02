@@ -40,6 +40,10 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cr = Components.results;
 
+Components.utils.import("resource:///modules/Twitter.jsm");
+
+var gDirectMessage = /^d\s+(\S*)\s+(.*)/;
+
 var UpdateListener = {
   onUpdateStarted: function() {
     document.documentElement.setAttribute("busy", "true");
@@ -54,6 +58,10 @@ var UpdateListener = {
   }
 };
 
+function LOG(str) {
+  dump("twitter.js: " + str + "\n");
+}
+
 function Startup() {
   var service = Cc["@oxymoronical.com/twitterservice;1"].
                 getService(Ci.twITwitterService);
@@ -66,6 +74,37 @@ function Shutdown() {
   var service = Cc["@oxymoronical.com/twitterservice;1"].
                 getService(Ci.twITwitterService);
   service.removeUpdateListener(UpdateListener);
+}
+
+function SendMessage() {
+  var service = Cc["@oxymoronical.com/twitterservice;1"].
+                getService(Ci.twITwitterService);
+  var message = document.getElementById("message").value;
+
+  var results = gDirectMessage.exec(message);
+  if (results) {
+    Twitter.sendDirectMessage(service.username, service.password, results[1], results[2]);
+  }
+  else {
+    Twitter.setStatus(service.username, service.password, message);
+  }
+
+  document.getElementById("message").value = "";
+  AfterKeyPressed();
+}
+
+function AfterKeyPressed(event) {
+  var text = document.getElementById("message").value;
+  document.getElementById("send").disabled = text == "";
+  document.getElementById("count").value = 140 - text.length;
+}
+
+function KeyPressed(event) {
+  if (event.keyCode == Ci.nsIDOMKeyEvent.DOM_VK_RETURN) {
+    SendMessage();
+    return false;
+  }
+  return true;
 }
 
 // If a window with the type exists just focus it otherwise open a new window

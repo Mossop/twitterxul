@@ -264,10 +264,10 @@ TwitterService.prototype = {
   },
 
   callListeners: function(method) {
-    var args = arguments;
+    var args = Array.splice(arguments, 1);
     this.listeners.forEach(function(listener) {
       try {
-        listener[method].apply(listener, Array.splice(args, 1));
+        listener[method].apply(listener, args);
       }
       catch (e) {
         LOG("Error calling update listener: " + e);
@@ -288,13 +288,17 @@ TwitterService.prototype = {
     return this.user;
   },
 
+  get password() {
+    return this.prefs.getCharPref("password");
+  },
+
   refresh: function() {
     if (this.opCount)
       return;
 
     this.timer.cancel();
 
-    var pass = this.prefs.getCharPref("password");
+    var pass = this.password;
 
     this.callListeners("onUpdateStarted");
 

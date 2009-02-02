@@ -118,6 +118,15 @@
       </action>
     </template>
   </richlistbox>
+  <hbox align="stretch">
+    <textbox id="message" flex="1" multiline="true"
+             oninput="AfterKeyPressed()" onkeypress="return KeyPressed(event)"/>
+    <vbox align="center">
+      <label id="count" value="140"/>
+      <spacer flex="1"/>
+      <button id="send" disabled="true" label="&send.label;" onclick="SendMessage()"/>
+    </vbox>
+  </hbox>
   <statusbar>
     <spacer flex="1"/>
     <statusbarpanel id="throbber" class="statusbarpanel-iconic"/>

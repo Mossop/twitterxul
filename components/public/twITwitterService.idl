@@ -58,6 +58,7 @@ interface twITwitterService : nsISupports
   readonly attribute boolean busy;
 
   readonly attribute AString username;
+  readonly attribute AString password;
 
   readonly attribute mozIStorageConnection database;
 
