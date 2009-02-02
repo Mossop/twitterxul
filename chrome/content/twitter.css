@@ -9,16 +9,3 @@ richlistitem[type="1"] {
 richlistitem[type="2"] {
   -moz-binding: url(chrome://twitter/content/twitter.xml#direct);
 }
-
-richlistitem[type="0"] .user,
-richlistitem[type="1"] .user {
-  -moz-binding: url(chrome://twitter/content/twitter.xml#author);
-}
-
-richlistitem[type="2"][author_type="1"] .user {
-  -moz-binding: url(chrome://twitter/content/twitter.xml#received);
-}
-
-richlistitem[type="2"][author_type="0"] .user {
-  -moz-binding: url(chrome://twitter/content/twitter.xml#sent);
-}
