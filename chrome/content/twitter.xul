@@ -80,10 +80,13 @@
   </menubar>
 
   <toolbox>
-    <toolbar class="chromeclass-toolbar">
+    <toolbar class="chromeclass-toolbar" align="center">
       <toolbarbutton label="&refresh.label;" tooltipText="&refresh.tooltip;"
                      id="refresh" oncommand="Refresh()"/>
-      <textbox type="search" flex="1" emptytext="&search.text;"/>
+      <toolbarspacer flex="1"/>
+      <toolbaritem>
+        <image id="throbber"/>
+      </toolbaritem>
     </toolbar>
   </toolbox>
 
@@ -132,15 +135,11 @@
   <statusbar>
     <textbox id="message" flex="1" multiline="true"
              oninput="AfterKeyPressed()" onkeypress="return KeyPressed(event)"/>
-    <vbox align="stretch">
+    <vbox align="center">
       <spacer flex="1"/>
       <button id="send" disabled="true" label="&send.label;" oncommand="SendMessage()"/>
       <spacer flex="1"/>
-      <hbox>
-        <label id="count" value="140"/>
-        <spacer flex="1"/>
-        <statusbarpanel id="throbber" class="statusbarpanel-iconic"/>
-      </hbox>
+      <label id="count" value="140"/>
       <spacer flex="1"/>
     </vbox>
   </statusbar>

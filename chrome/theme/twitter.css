@@ -1,9 +1,21 @@
+toolbar {
+  padding: 5px;
+}
+
 #refresh {
   list-style-image: url(chrome://twitter/skin/refresh.png);
 }
 
 #refresh .toolbarbutton-text {
   display: none;
+}
+
+#throbber {
+  list-style-image: url(chrome://global/skin/icons/notloading_16.png);
+}
+
+window[busy="true"] #throbber {
+  list-style-image: url(chrome://global/skin/icons/loading_16.png);
 }
 
 richlistbox {
@@ -84,12 +96,4 @@ richlistitem[type="2"] .reply {
 
 richlistitem[author_type="0"] .reply {
   display: none;
-}
-
-#throbber {
-  list-style-image: url(chrome://global/skin/icons/notloading_16.png);
-}
-
-window[busy="true"] #throbber {
-  list-style-image: url(chrome://global/skin/icons/loading_16.png);
 }
