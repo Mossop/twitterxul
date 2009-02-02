@@ -1,11 +1,11 @@
-richlistitem[type="0"] {
+.status-item[type="0"] {
   -moz-binding: url(chrome://twitter/content/twitter.xml#status);
 }
 
-richlistitem[type="1"] {
+.status-item[type="1"] {
   -moz-binding: url(chrome://twitter/content/twitter.xml#reply);
 }
 
-richlistitem[type="2"] {
+.status-item[type="2"] {
   -moz-binding: url(chrome://twitter/content/twitter.xml#direct);
 }

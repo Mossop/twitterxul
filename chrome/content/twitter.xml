@@ -48,31 +48,31 @@
 
   <binding id="status" extends="chrome://global/content/bindings/richlistbox.xml#richlistitem">
     <content orient="horizontal">
-      <xul:stack class="image-stack">
+      <xul:stack class="avatar-stack">
         <xul:vbox align="center" pack="center">
-          <xul:image class="image-loading"/>
+          <xul:image class="loading-image"/>
         </xul:vbox>
         <xul:vbox align="start" pack="start">
-          <xul:image class="image" xbl:inherits="src=author_imageURL"/>
+          <xul:image class="avatar-image" xbl:inherits="src=author_imageURL"/>
         </xul:vbox>
         <xul:vbox align="end" pack="end">
-          <xul:image class="image-overlay"/>
+          <xul:image class="overlay-image"/>
         </xul:vbox>
       </xul:stack>
       <xul:vbox flex="1">
-        <xul:label class="user" xbl:inherits="value=title"/>
+        <xul:label class="title-label" xbl:inherits="value=title"/>
         <children/>
       </xul:vbox>
-      <xul:vbox class="buttons">
-        <xul:button class="reply plain" onclick="ReplyTo(this.parentNode.parentNode)"
-                    label="&reply.label;" tooltipText="&reply.tooltip;"/>
+      <xul:vbox class="button-box">
+        <xul:button class="reply-button plain" onclick="replyTo(this.parentNode.parentNode)"
+                    label="&reply-button.label;" tooltipText="&reply-button.tooltip;"/>
       </xul:vbox>
     </content>
     <implementation>
       <constructor>
       <![CDATA[
         if (this.type == 2) {
-          var strings = document.getElementById("strings");
+          var strings = document.getElementById("main-strings");
           if (this.getAttribute("author_type") == 0)
             this.setAttribute("title", strings.getFormattedString("directmessage.sent.title", [this.getAttribute("target_name")]));
           else
@@ -89,7 +89,7 @@
         text = text.replace(userreg, "$1<a href='http://twitter.com/$2'>@$2</a>$3");
 
         var div = document.createElementNS("http://www.w3.org/1999/xhtml", "div");
-        div.setAttribute("class", "text");
+        div.setAttribute("class", "status-div");
         div.innerHTML = text;
         this.appendChild(div);
       ]]>

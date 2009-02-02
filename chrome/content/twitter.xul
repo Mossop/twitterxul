@@ -47,51 +47,51 @@
 ]>
 
 <window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-        windowtype="Canary:Main" style="&window.style;" title="&window.title;"
-        onload="Startup()" onunload="Shutdown()" id="mainwindow"
+        windowtype="Twitter:Main" style="&main-window.style;" title="&main-window.title;"
+        onload="onStartup()" onunload="onShutdown()" id="main-window"
         persist="screenX screenY width height">
 
   <script type="application/javascript" src="twitter.js"/>
 
-  <stringbundle id="strings" src="chrome://twitter/locale/twitter.properties"/>
+  <stringbundle id="main-strings" src="chrome://twitter/locale/twitter.properties"/>
 
   <menubar>
-    <menu id="toolsMenu" label="&toolsMenu.label;" accesskey="&toolsMenu.accesskey;">
+    <menu id="tools-menu" label="&tools-menu.label;" accesskey="&tools-menu.accesskey;">
       <menupopup>
-        <menuitem id="menu-addons" oncommand="openAddons()" class="menuitem-iconic"
-                  label="&addons.label;" accesskey="&addons.accesskey;"/>
-        <menuitem id="menu-console" oncommand="openErrorConsole()" class="menuitem-iconic"
-                  label="&console.label;" accesskey="&console.accesskey;"/>
-        <menuitem id="menu-config" oncommand="openConfig()" class="menuitem-iconic"
-                  label="&config.label;" accesskey="&config.accesskey;"/>
-        <menuseparator/>
-        <menuitem id="menu-inspector" oncommand="openDOMInspector()" class="menuitem-iconic"
-                  label="&inspector.label;" accesskey="&inspector.accesskey;"/>
+        <menuitem id="addons-menu" oncommand="openAddons()" class="menuitem-iconic"
+                  label="&addons-menu.label;" accesskey="&addons-menu.accesskey;"/>
+        <menuitem id="console-menu" oncommand="openErrorConsole()" class="menuitem-iconic"
+                  label="&console-menu.label;" accesskey="&console-menu.accesskey;"/>
+        <menuitem id="config-menu" oncommand="openConfig()" class="menuitem-iconic"
+                  label="&config-menu.label;" accesskey="&config-menu.accesskey;"/>
+        <menuseparator id="inspector-separator"/>
+        <menuitem id="inspector-menu" oncommand="openDOMInspector()" class="menuitem-iconic"
+                  label="&inspector-menu.label;" accesskey="&inspector-menu.accesskey;"/>
       </menupopup>
     </menu>
-    <menu id="helpMenu" label="&helpMenu.label;" accesskey="&helpMenu.accesskey;">
+    <menu id="help-menu" label="&help-menu.label;" accesskey="&help-menu.accesskey;">
       <menupopup onpopupshowing="buildHelpMenu();">
-        <menuitem id="menu-update" oncommand="openUpdates()" class="menuitem-iconic"
-                  label="&update.label;" accesskey="&update.accesskey;"/>
+        <menuitem id="update-menu" oncommand="openUpdates()" class="menuitem-iconic"
+                  label="&update-menu.label;" accesskey="&update-menu.accesskey;"/>
         <menuitem id="aboutName" oncommand="openAbout()"
-                  label="&about.label;" accesskey="&about.accesskey;"/>
+                  label="&about-menu.label;" accesskey="&about-menu.accesskey;"/>
       </menupopup>
     </menu>
   </menubar>
 
   <toolbox>
-    <toolbar class="chromeclass-toolbar" align="center">
-      <toolbarbutton label="&refresh.label;" tooltipText="&refresh.tooltip;"
-                     id="refresh" oncommand="Refresh()"/>
+    <toolbar class="chromeclass-toolbar" align="center" id="main-toolbar">
+      <toolbarbutton label="&refresh-button.label;" tooltipText="&refresh-button.tooltip;"
+                     id="refresh-button" oncommand="refresh()"/>
       <toolbarspacer flex="1"/>
       <toolbaritem>
-        <image id="throbber"/>
+        <image id="throbber-image"/>
       </toolbaritem>
     </toolbar>
   </toolbox>
 
   <richlistbox datasources="rdf:null" ref="*" querytype="storage"
-               id="statuslist" flex="1">
+               id="status-list" flex="1">
     <template>
       <query>
         SELECT Messages.id AS id,
@@ -128,18 +128,20 @@
                       target_id="?target_id" target_username="?target_username"
                       target_name="?target_name" target_location="?target_location"
                       target_description="?target_description" target_type="?target_type"
-                      target_imageURL="?target_imageURL" target_homeURL="?target_homeURL"/>
+                      target_imageURL="?target_imageURL" target_homeURL="?target_homeURL"
+                      class="status-item"/>
       </action>
     </template>
   </richlistbox>
   <statusbar>
-    <textbox id="message" flex="1" multiline="true"
-             oninput="AfterKeyPressed()" onkeypress="return KeyPressed(event)"/>
+    <textbox id="message-textbox" flex="1" multiline="true"
+             oninput="afterKeyPressed()" onkeypress="return onKeyPressed(event)"/>
     <vbox align="center">
       <spacer flex="1"/>
-      <button id="send" disabled="true" label="&send.label;" oncommand="SendMessage()"/>
+      <button id="send-button" disabled="true" label="&send-button.label;"
+              oncommand="sendMessage()"/>
       <spacer flex="1"/>
-      <label id="count" value="140"/>
+      <label id="count-label" value="140"/>
       <spacer flex="1"/>
     </vbox>
   </statusbar>

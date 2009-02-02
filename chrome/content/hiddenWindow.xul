@@ -45,7 +45,7 @@
 %windowDTD;
 ]>
 
-<window windowtype="Canary:HiddenWindow" onload="Startup()" onunload="Shutdown()"
+<window windowtype="Twitter:HiddenWindow" onload="onStartup()" onunload="onShutdown()"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 <script type="application/javascript">
 const Cc = Components.classes;
@@ -74,13 +74,13 @@ var UpdateListener = {
   }
 };
 
-function Startup() {
+function onStartup() {
   var service = Cc["@oxymoronical.com/twitterservice;1"].
                 getService(Ci.twITwitterService);
   service.addUpdateListener(UpdateListener);
 }
 
-function Shutdown() {
+function onShutdown() {
   var service = Cc["@oxymoronical.com/twitterservice;1"].
                 getService(Ci.twITwitterService);
   service.removeUpdateListener(UpdateListener);

@@ -1,31 +1,30 @@
-<!ENTITY window.title          "&brandShortName;">
-<!ENTITY window.style          "width: 30em; height: 50em;">
+<!ENTITY main-window.title             "&brandShortName;">
+<!ENTITY main-window.style             "width: 30em; height: 50em;">
 
 
-<!ENTITY toolsMenu.label                 "Tools">
-<!ENTITY toolsMenu.accesskey             "T">
+<!ENTITY tools-menu.label              "Tools">
+<!ENTITY tools-menu.accesskey          "T">
 
-<!ENTITY addons.label                    "Add-ons">
-<!ENTITY addons.accesskey                "A">
-<!ENTITY console.label                   "Error Console">
-<!ENTITY console.accesskey               "E">
-<!ENTITY config.label                    "Advanced Configuration">
-<!ENTITY config.accesskey                "C">
-<!ENTITY inspector.label                 "DOM Inspector">
-<!ENTITY inspector.accesskey             "I">
+<!ENTITY addons-menu.label             "Add-ons">
+<!ENTITY addons-menu.accesskey         "A">
+<!ENTITY console-menu.label            "Error Console">
+<!ENTITY console-menu.accesskey        "E">
+<!ENTITY config-menu.label             "Advanced Configuration">
+<!ENTITY config-menu.accesskey         "C">
+<!ENTITY inspector-menu.label          "DOM Inspector">
+<!ENTITY inspector-menu.accesskey      "I">
 
 
-<!ENTITY helpMenu.label                  "Help">
-<!ENTITY helpMenu.accesskey              "H">
+<!ENTITY help-menu.label               "Help">
+<!ENTITY help-menu.accesskey           "H">
 
-<!ENTITY update.label                    "Check for Updates…">
-<!ENTITY update.accesskey                "C">
-<!ENTITY about.label                     "About &brandShortName;">
-<!ENTITY about.accesskey                 "A">
+<!ENTITY update-menu.label             "Check for Updates…">
+<!ENTITY update-menu.accesskey         "C">
+<!ENTITY about-menu.label              "About &brandShortName;">
+<!ENTITY about-menu.accesskey          "A">
 
-<!ENTITY refresh.label                   "Refresh">
-<!ENTITY refresh.tooltip                 "Refresh">
-<!ENTITY search.text                     "Search messages">
-<!ENTITY send.label                      "Send">
-<!ENTITY reply.label                     "Reply">
-<!ENTITY reply.tooltip                   "Reply">
+<!ENTITY refresh-button.label          "Refresh">
+<!ENTITY refresh-button.tooltip        "Refresh">
+<!ENTITY send-button.label             "Send">
+<!ENTITY reply-button.label            "Reply">
+<!ENTITY reply-button.tooltip          "Reply">

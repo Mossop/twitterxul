@@ -42,91 +42,8 @@ const Cr = Components.results;
 
 Components.utils.import("resource:///modules/Twitter.jsm");
 
-var gDirectMessage = /^d\s+(\S*)\s+(.*)/;
-
-var UpdateListener = {
-  onUpdateStarted: function() {
-    document.documentElement.setAttribute("busy", "true");
-    document.getElementById("refresh").disabled = true;
-  },
-
-  onNewItemsAdded: function(items, count) {
-    document.getElementById("statuslist").builder.rebuild();
-  },
-
-  onUpdateEnded: function() {
-    document.documentElement.setAttribute("busy", "false");
-    document.getElementById("refresh").disabled = false;
-  }
-};
-
 function LOG(str) {
   dump("twitter.js: " + str + "\n");
-}
-
-function Startup() {
-  var service = Cc["@oxymoronical.com/twitterservice;1"].
-                getService(Ci.twITwitterService);
-  document.documentElement.setAttribute("busy", service.busy ? "true" : "false");
-  document.getElementById("refresh").disabled = service.busy;
-  service.addUpdateListener(UpdateListener);
-  document.getElementById("statuslist").builder.datasource = service.database;
-}
-
-function Shutdown() {
-  var service = Cc["@oxymoronical.com/twitterservice;1"].
-                getService(Ci.twITwitterService);
-  service.removeUpdateListener(UpdateListener);
-}
-
-function Refresh() {
-  var service = Cc["@oxymoronical.com/twitterservice;1"].
-                getService(Ci.twITwitterService);
-  service.refresh();
-}
-
-function ReplyTo(item) {
-  var messageBox = document.getElementById("message");
-  if (item.getAttribute("type") == 2)
-    messageBox.value = "d " + item.getAttribute("author_username") + " ";
-  else
-    messageBox.value += "@" + item.getAttribute("author_username") + " ";
-
-  messageBox.selectionStart = messageBox.value.length;
-  messageBox.selectionEnd = messageBox.value.length;
-  messageBox.focus();
-  AfterKeyPressed();
-}
-
-function SendMessage() {
-  var service = Cc["@oxymoronical.com/twitterservice;1"].
-                getService(Ci.twITwitterService);
-  var message = document.getElementById("message").value;
-
-  var results = gDirectMessage.exec(message);
-  if (results) {
-    Twitter.sendDirectMessage(service.username, service.password, results[1], results[2]);
-  }
-  else {
-    Twitter.setStatus(service.username, service.password, message);
-  }
-
-  document.getElementById("message").value = "";
-  AfterKeyPressed();
-}
-
-function AfterKeyPressed(event) {
-  var text = document.getElementById("message").value;
-  document.getElementById("send").disabled = text == "";
-  document.getElementById("count").value = 140 - text.length;
-}
-
-function KeyPressed(event) {
-  if (event.keyCode == Ci.nsIDOMKeyEvent.DOM_VK_RETURN) {
-    SendMessage();
-    return false;
-  }
-  return true;
 }
 
 // If a window with the type exists just focus it otherwise open a new window
@@ -143,6 +60,89 @@ function openWindowForType(type, uri, features) {
     window.open(uri, "_blank", "chrome,extrachrome,menubar,resizable,scrollbars,status,toolbar");
 }
 
+var gDirectMessage = /^d\s+(\S*)\s+(.*)/;
+
+var UpdateListener = {
+  onUpdateStarted: function() {
+    document.documentElement.setAttribute("busy", "true");
+    document.getElementById("refresh-button").disabled = true;
+  },
+
+  onNewItemsAdded: function(items, count) {
+    document.getElementById("status-list").builder.rebuild();
+  },
+
+  onUpdateEnded: function() {
+    document.documentElement.setAttribute("busy", "false");
+    document.getElementById("refresh-button").disabled = false;
+  }
+};
+
+function onStartup() {
+  var service = Cc["@oxymoronical.com/twitterservice;1"].
+                getService(Ci.twITwitterService);
+  document.documentElement.setAttribute("busy", service.busy ? "true" : "false");
+  document.getElementById("refresh-button").disabled = service.busy;
+  service.addUpdateListener(UpdateListener);
+  document.getElementById("status-list").builder.datasource = service.database;
+}
+
+function onShutdown() {
+  var service = Cc["@oxymoronical.com/twitterservice;1"].
+                getService(Ci.twITwitterService);
+  service.removeUpdateListener(UpdateListener);
+}
+
+function refresh() {
+  var service = Cc["@oxymoronical.com/twitterservice;1"].
+                getService(Ci.twITwitterService);
+  service.refresh();
+}
+
+function replyTo(item) {
+  var messageBox = document.getElementById("message-textbox");
+  if (item.getAttribute("type") == 2)
+    messageBox.value = "d " + item.getAttribute("author_username") + " ";
+  else
+    messageBox.value += "@" + item.getAttribute("author_username") + " ";
+
+  messageBox.selectionStart = messageBox.value.length;
+  messageBox.selectionEnd = messageBox.value.length;
+  messageBox.focus();
+  afterKeyPressed();
+}
+
+function sendMessage() {
+  var service = Cc["@oxymoronical.com/twitterservice;1"].
+                getService(Ci.twITwitterService);
+  var message = document.getElementById("message-textbox").value;
+
+  var results = gDirectMessage.exec(message);
+  if (results) {
+    Twitter.sendDirectMessage(service.username, service.password, results[1], results[2]);
+  }
+  else {
+    Twitter.setStatus(service.username, service.password, message);
+  }
+
+  document.getElementById("message-texbox").value = "";
+  afterKeyPressed();
+}
+
+function afterKeyPressed(event) {
+  var text = document.getElementById("message-textbox").value;
+  document.getElementById("send-button").disabled = text == "";
+  document.getElementById("count-label").value = 140 - text.length;
+}
+
+function onKeyPressed(event) {
+  if (event.keyCode == Ci.nsIDOMKeyEvent.DOM_VK_RETURN) {
+    sendMessage();
+    return false;
+  }
+  return true;
+}
+
 function buildHelpMenu()
 {
   var updates = Cc["@mozilla.org/updates/update-service;1"].
@@ -152,13 +152,13 @@ function buildHelpMenu()
 
   // Disable the UI if the update enabled pref has been locked by the 
   // administrator or if we cannot update for some other reason
-  var checkForUpdates = document.getElementById("menu-update");
+  var checkForUpdates = document.getElementById("update-menu");
   var canUpdate = updates.canUpdate;
   checkForUpdates.setAttribute("disabled", !canUpdate);
   if (!canUpdate)
     return; 
 
-  var strings = document.getElementById("strings");
+  var strings = document.getElementById("main-strings");
   var activeUpdate = um.activeUpdate;
   
   // If there's an active update, substitute its name into the label
@@ -193,24 +193,6 @@ function buildHelpMenu()
     checkForUpdates.removeAttribute("loading");
 }
 
-function openAddons() {
-  openWindowForType("Extension:Manager",
-                    "chrome://mozapps/content/extensions/extensions.xul");
-}
-
-function openErrorConsole() {
-  openWindowForType("global:console", "chrome://global/content/console.xul");
-}
-
-function openConfig() {
-  openWindowForType("Preferences:ConfigManager", "chrome://global/content/config.xul");
-}
-
-function openDOMInspector() {
-  window.openDialog("chrome://inspector/content/", "_blank",
-                    "chrome,all,dialog=no", document);
-}
-
 /**
  * Opens the update manager and checks for updates to the application.
  */
@@ -230,8 +212,26 @@ function openUpdates()
     prompter.checkForUpdates();
 }
 
+function openAddons() {
+  openWindowForType("Extension:Manager",
+                    "chrome://mozapps/content/extensions/extensions.xul");
+}
+
+function openErrorConsole() {
+  openWindowForType("global:console", "chrome://global/content/console.xul");
+}
+
+function openConfig() {
+  openWindowForType("Preferences:ConfigManager", "chrome://global/content/config.xul");
+}
+
+function openDOMInspector() {
+  window.openDialog("chrome://inspector/content/", "_blank",
+                    "chrome,all,dialog=no", document);
+}
+
 function openAbout() {
-  openWindowForType("Canary:About", "chrome://twitter/content/about.xul",
+  openWindowForType("Twitter:About", "chrome://twitter/content/about.xul",
                     "chrome,dialog,centerscreen");
 }
 

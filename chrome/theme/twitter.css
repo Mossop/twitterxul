@@ -1,83 +1,83 @@
-toolbar {
+#main-toolbar {
   padding: 5px;
 }
 
-#refresh {
+#refresh-button {
   list-style-image: url(chrome://twitter/skin/refresh.png);
 }
 
-#refresh .toolbarbutton-text {
+#refresh-button .toolbarbutton-text {
   display: none;
 }
 
-#throbber {
+#throbber-image {
   list-style-image: url(chrome://global/skin/icons/notloading_16.png);
 }
 
-window[busy="true"] #throbber {
+#main-window[busy="true"] #throbber-image {
   list-style-image: url(chrome://global/skin/icons/loading_16.png);
 }
 
-richlistbox {
+#status-list {
   margin: 0;
   border: 0px none;
   -moz-appearance: none;
 }
 
-richlistitem {
+.status-item {
   -moz-box-align: start;
   padding: 5px;
 }
 
-richlistitem[type="1"][target_type="0"] {
+.status-item[type="1"][target_type="0"] {
   background-color: #fce94f;
 }
 
-richlistitem[type="2"][target_type="0"] {
+.status-item[type="2"][target_type="0"] {
   background-color: #ad7fa8;
 }
 
-richlistitem[type="2"][author_type="0"] {
+.status-item[type="2"][author_type="0"] {
   background-color: #8ae234;
 }
 
-.image-stack {
+.avatar-stack {
   margin-right: 5px;
 }
 
-.image-loading {
+.loading-image {
   list-style-image: url(chrome://global/skin/icons/loading_16.png);
 }
 
-.image {
+.avatar-image {
   width: 48px;
   height: 48px;
   margin-right: 2px;
   margin-bottom: 2px;
 }
 
-richlistitem[type="2"] .image-overlay {
+.status-item[type="2"] .overlay-image {
   list-style-image: url(chrome://twitter/skin/message.png);
 }
 
-.user {
+.title-label {
   font-size: 120%;
   font-weight: bold;
 }
 
-.text {
+.status-div {
   cursor: default;
 }
 
-.text a {
+.status-div a {
   color: blue;
 }
 
-.buttons {
+.button-box {
   margin-left: 5px;
 }
 
-.reply {
+.reply-button {
   -moz-appearance: none;
   width: 16px;
   height: 16px;
@@ -86,14 +86,14 @@ richlistitem[type="2"] .image-overlay {
   list-style-image: url(chrome://twitter/skin/reply.png);
 }
 
-.reply .button-text {
+.reply-button .button-text {
   display: none;
 }
 
-richlistitem[type="2"] .reply {
+.status-item[type="2"] .reply-button {
   list-style-image: url(chrome://twitter/skin/message-reply.png);
 }
 
-richlistitem[author_type="0"] .reply {
+.status-item[author_type="0"] .reply-button {
   display: none;
 }
