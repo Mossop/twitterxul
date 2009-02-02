@@ -24,3 +24,5 @@
 <!ENTITY about.accesskey                 "A">
 
 <!ENTITY send.label                      "Send">
+<!ENTITY reply.label                     "Reply">
+<!ENTITY reply.tooltip                   "Reply">

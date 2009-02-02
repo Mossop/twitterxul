@@ -1,13 +1,15 @@
 richlistbox {
   margin: 0;
+  border: 0px none;
 }
 
 richlistitem {
   -moz-box-align: start;
+  padding: 5px;
 }
 
 .author-image {
-  margin: 3px;
+  margin-right: 5px;
   width: 48px;
   height: 48px;
   list-style-image: url(chrome://global/skin/icons/loading_16.png);
@@ -16,6 +18,23 @@ richlistitem {
 .user {
   font-size: 120%;
   font-weight: bold;
+}
+
+.buttons {
+  margin-left: 5px;
+}
+
+.reply {
+  -moz-appearance: none;
+  width: 16px;
+  height: 16px;
+  min-width: 0;
+  min-height: 0;
+  background-color: black;
+}
+
+.reply .button-text {
+  display: none;
 }
 
 #throbber {

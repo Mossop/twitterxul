@@ -76,6 +76,19 @@ function Shutdown() {
   service.removeUpdateListener(UpdateListener);
 }
 
+function ReplyTo(item) {
+  var messageBox = document.getElementById("message");
+  if (item.getAttribute("type") == 2)
+    messageBox.value = "d " + item.getAttribute("author_username") + " ";
+  else
+    messageBox.value += "@" + item.getAttribute("author_username") + " ";
+
+  messageBox.selectionStart = messageBox.value.length;
+  messageBox.selectionEnd = messageBox.value.length;
+  messageBox.focus();
+  AfterKeyPressed();
+}
+
 function SendMessage() {
   var service = Cc["@oxymoronical.com/twitterservice;1"].
                 getService(Ci.twITwitterService);
