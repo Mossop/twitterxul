@@ -64,8 +64,9 @@
                   label="&console-menu.label;" accesskey="&console-menu.accesskey;"/>
         <menuitem id="config-menu" oncommand="openConfig()" class="menuitem-iconic"
                   label="&config-menu.label;" accesskey="&config-menu.accesskey;"/>
-        <menuseparator id="inspector-separator"/>
-        <menuitem id="inspector-menu" oncommand="openDOMInspector()" class="menuitem-iconic"
+        <menuseparator id="inspector-separator" hidden="true"/>
+        <menuitem id="inspector-menu" oncommand="openDOMInspector()"
+                  class="menuitem-iconic" hidden="true"
                   label="&inspector-menu.label;" accesskey="&inspector-menu.accesskey;"/>
       </menupopup>
     </menu>

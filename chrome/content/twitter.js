@@ -91,6 +91,13 @@ function onStartup() {
 
   // Reusing the same database connection is much faster
   document.getElementById("status-list").builder.datasource = service.database;
+
+  var em = Cc["@mozilla.org/extensions/manager;1"].
+           getService(Ci.nsIExtensionManager);
+  if (em.getItemForID("inspector@mozilla.org")) {
+    document.getElementById("inspector-separator").hidden = false;
+    document.getElementById("inspector-menu").hidden = false;
+  }
 }
 
 // Called during window close
