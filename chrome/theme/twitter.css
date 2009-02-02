@@ -1,6 +1,7 @@
 richlistbox {
   margin: 0;
   border: 0px none;
+  -moz-appearance: none;
 }
 
 richlistitem {
@@ -34,6 +35,10 @@ richlistitem {
 }
 
 .reply .button-text {
+  display: none;
+}
+
+richlistitem[author_type="0"] .reply {
   display: none;
 }
 

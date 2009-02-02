@@ -47,6 +47,7 @@ var gDirectMessage = /^d\s+(\S*)\s+(.*)/;
 var UpdateListener = {
   onUpdateStarted: function() {
     document.documentElement.setAttribute("busy", "true");
+    document.getElementById("refresh").disabled = true;
   },
 
   onNewItemsAdded: function(items, count) {
@@ -55,6 +56,7 @@ var UpdateListener = {
 
   onUpdateEnded: function() {
     document.documentElement.setAttribute("busy", "false");
+    document.getElementById("refresh").disabled = false;
   }
 };
 
@@ -66,6 +68,7 @@ function Startup() {
   var service = Cc["@oxymoronical.com/twitterservice;1"].
                 getService(Ci.twITwitterService);
   document.documentElement.setAttribute("busy", service.busy ? "true" : "false");
+  document.getElementById("refresh").disabled = service.busy;
   service.addUpdateListener(UpdateListener);
   document.getElementById("statuslist").builder.datasource = service.database;
 }
@@ -74,6 +77,12 @@ function Shutdown() {
   var service = Cc["@oxymoronical.com/twitterservice;1"].
                 getService(Ci.twITwitterService);
   service.removeUpdateListener(UpdateListener);
+}
+
+function Refresh() {
+  var service = Cc["@oxymoronical.com/twitterservice;1"].
+                getService(Ci.twITwitterService);
+  service.refresh();
 }
 
 function ReplyTo(item) {

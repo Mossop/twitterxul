@@ -23,6 +23,9 @@
 <!ENTITY about.label                     "About &brandShortName;">
 <!ENTITY about.accesskey                 "A">
 
+<!ENTITY refresh.label                   "Refresh">
+<!ENTITY refresh.tooltip                 "Refresh">
+<!ENTITY search.text                     "Search messages">
 <!ENTITY send.label                      "Send">
 <!ENTITY reply.label                     "Reply">
 <!ENTITY reply.tooltip                   "Reply">
