@@ -66,7 +66,17 @@
 
   <binding id="status" extends="chrome://global/content/bindings/richlistbox.xml#richlistitem">
     <content orient="horizontal">
-      <xul:image class="author-image" xbl:inherits="src=author_imageURL"/>
+      <xul:stack class="image-stack">
+        <xul:vbox align="center" pack="center">
+          <xul:image class="image-loading"/>
+        </xul:vbox>
+        <xul:vbox align="start" pack="start">
+          <xul:image class="image" xbl:inherits="src=author_imageURL"/>
+        </xul:vbox>
+        <xul:vbox align="end" pack="end">
+          <xul:image class="image-overlay"/>
+        </xul:vbox>
+      </xul:stack>
       <xul:vbox flex="1">
         <xul:hbox class="user" xbl:inherits="author=author_name, target=target_name"/>
         <xul:description xbl:inherits="xbl:text=text"/>

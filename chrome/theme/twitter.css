@@ -29,11 +29,23 @@ richlistitem[type="2"][author_type="0"] {
   background-color: #8ae234;
 }
 
-.author-image {
+.image-stack {
   margin-right: 5px;
+}
+
+.image-loading {
+  list-style-image: url(chrome://global/skin/icons/loading_16.png);
+}
+
+.image {
   width: 48px;
   height: 48px;
-  -moz-border-radius: 5px;
+  margin-right: 2px;
+  margin-bottom: 2px;
+}
+
+richlistitem[type="2"] .image-overlay {
+  list-style-image: url(chrome://twitter/skin/message.png);
 }
 
 .user {
