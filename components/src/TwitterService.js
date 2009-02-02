@@ -97,8 +97,8 @@ TwitterService.prototype = {
                  get("ProfD", Ci.nsIFile);
     dbfile.append("twitter.sqlite");
     
-    var storageService = Components.classes["@mozilla.org/storage/service;1"]
-                            .getService(Ci.mozIStorageService);
+    var storageService = Cc["@mozilla.org/storage/service;1"].
+                         getService(Ci.mozIStorageService);
     this.db = storageService.openDatabase(dbfile);
 
     switch (this.db.schemaVersion) {
@@ -114,21 +114,10 @@ TwitterService.prototype = {
       return;
     }
 
-    if (this.user) {
-      try {
-        var next = this.prefs.getIntPref("lastUpdate");
-        next += this.refreshRate;
-        next -= Date.now() / 1000;
-        if (next <= 0)
-          this.refresh();
-        else
-          this.timer.init(this, next * 1000, Ci.nsITimer.TYPE_ONE_SHOT);
-      }
-      catch (e) {
-        // We'll get here if the lastUpdate pref hasn't been set yet
-        this.refresh();
-      }
-    }
+    var observerService = Cc["@mozilla.org/observer-service;1"].
+                          getService(Ci.nsIObserverService);
+    observerService.addObserver(this, "final-ui-startup", false);
+    observerService.addObserver(this, "xpcom-shutdown", false);
   },
 
   // Creates the database
@@ -349,8 +338,34 @@ TwitterService.prototype = {
   observe: function(subject, topic, data) {
     switch (topic) {
     case "profile-after-change":
-      // TODO move startup to final-ui-startup
       this.startup();
+      break;
+    case "final-ui-startup":
+      if (this.user) {
+        try {
+          var next = this.prefs.getIntPref("lastUpdate");
+          next += this.refreshRate;
+          next -= Date.now() / 1000;
+          if (next <= 0)
+            this.refresh();
+          else
+            this.timer.init(this, next * 1000, Ci.nsITimer.TYPE_ONE_SHOT);
+        }
+        catch (e) {
+          // We'll get here if the lastUpdate pref hasn't been set yet
+          this.refresh();
+        }
+      }
+      break;
+    case "xpcom-shutdown":
+      var observerService = Cc["@mozilla.org/observer-service;1"].
+                            getService(Ci.nsIObserverService);
+      observerService.removeObserver(this, "final-ui-startup");
+      observerService.removeObserver(this, "xpcom-shutdown");
+      this.prefs.removeObserver("", this);
+      this.prefs = null;
+      this.db.close();
+      this.db = null;
       break;
     case "timer-callback":
       this.refresh();
