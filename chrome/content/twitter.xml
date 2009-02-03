@@ -91,10 +91,15 @@
           this.setAttribute("title", this.getAttribute("author_name"));
         }
 
+        // Escape out any tags to prevent remote exploits
+        var text = this.text.replace("<", "&lt;");
+        text = this.text.replace(">", "&gt;");
+        text = this.text.replace("&", "&amp;");
+
         // Linkify @username and things that look like web links
         var urlreg = new RegExp("(^|[\\.,\\(\\s])((?:http|https|ftp):\\/\\/\\S+)([,\\.\\)]?)");
         var userreg = new RegExp("(^|[\\(\\s])@(\\S+)([,\\.\\)]?)");
-        var text = this.text.replace(urlreg, "$1<a href='$2'>$2</a>$3");
+        text = text.replace(urlreg, "$1<a href='$2'>$2</a>$3");
         text = text.replace(userreg, "$1<a href='http://twitter.com/$2'>@$2</a>$3");
 
         var div = document.createElementNS("http://www.w3.org/1999/xhtml", "div");
