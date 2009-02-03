@@ -3,3 +3,6 @@
 
 <!ENTITY login-button.label            "Change…">
 <!ENTITY login-button.accesskey        "C">
+
+<!ENTITY config.label                  "Advanced">
+<!ENTITY config.accesskey              "A">

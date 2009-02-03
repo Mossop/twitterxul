@@ -52,8 +52,6 @@
                   label="&addons-menu.label;" accesskey="&addons-menu.accesskey;"/>
         <menuitem id="console-menu" oncommand="TwitterMenu.openErrorConsole()" class="menuitem-iconic"
                   label="&console-menu.label;" accesskey="&console-menu.accesskey;"/>
-        <menuitem id="config-menu" oncommand="TwitterMenu.openConfig()" class="menuitem-iconic"
-                  label="&config-menu.label;" accesskey="&config-menu.accesskey;"/>
         <menuseparator id="inspector-separator" hidden="true"/>
         <menuitem id="inspector-menu" oncommand="TwitterMenu.openDOMInspector()"
                   class="menuitem-iconic" hidden="true"

@@ -55,3 +55,15 @@ function changeUsername() {
     document.getElementById("username-pref").value = user.value;
   }
 }
+
+function openAdvancedConfig() {
+  var topWindow = Cc['@mozilla.org/appshell/window-mediator;1'].
+                  getService(Components.interfaces.nsIWindowMediator).
+                  getMostRecentWindow("Preferences:ConfigManager");
+
+  if (topWindow)
+    topWindow.focus();
+  else
+    window.open("chrome://global/content/config.xul", "_blank",
+                "chrome,extrachrome,menubar,resizable,scrollbars,status,toolbar");
+}

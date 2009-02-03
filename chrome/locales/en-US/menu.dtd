@@ -5,8 +5,6 @@
 <!ENTITY addons-menu.accesskey         "A">
 <!ENTITY console-menu.label            "Error Console">
 <!ENTITY console-menu.accesskey        "E">
-<!ENTITY config-menu.label             "Advanced Configuration">
-<!ENTITY config-menu.accesskey         "C">
 <!ENTITY inspector-menu.label          "DOM Inspector">
 <!ENTITY inspector-menu.accesskey      "I">
 <!ENTITY options-menu.label            "Options…">

@@ -140,11 +140,6 @@ openErrorConsole: function() {
   this.openWindowForType("global:console", "chrome://global/content/console.xul");
 },
 
-// Opens about:config
-openConfig: function() {
-  this.openWindowForType("Preferences:ConfigManager", "chrome://global/content/config.xul");
-},
-
 // Opens the DOM Inspector
 openDOMInspector: function() {
   window.openDialog("chrome://inspector/content/", "_blank",

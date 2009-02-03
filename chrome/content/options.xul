@@ -58,16 +58,20 @@
 
     <stringbundle id="options-strings" src="chrome://twitter/locale/options.properties"/>
 
-    <vbox flex="1" align="center" pack="center">
-      <hbox align="center">
+    <vbox flex="1" align="stretch" pack="center">
+      <hbox align="center" pack="center">
         <label value="Username:"/>
         <textbox preference="username-pref" disabled="true"/>
         <button oncommand="changeUsername()"
                 label="&login-button.label;" accesskey="&login-button.accesskey;"/>
       </hbox>
-      <hbox align="center">
+      <hbox align="center" pack="center">
         <label value="Refresh rate:"/>
         <textbox preference="refreshrate-pref"/>
+      </hbox>
+      <hbox pack="end">
+        <button oncommand="openAdvancedConfig()"
+                label="&config.label;" accesskey="&config.accesskey;"/>
       </hbox>
     </vbox>
   </prefpane>
