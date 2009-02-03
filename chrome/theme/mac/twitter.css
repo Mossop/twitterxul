@@ -1,4 +1,4 @@
-toolbarbutton {
+#main-toolbar toolbarbutton {
   width: 31px;
   height: 23px;
   background-image: url(chrome://twitter/skin/mac/button.png);
@@ -6,11 +6,19 @@ toolbarbutton {
   padding: 3px 7px 4px 8px;
 }
 
-toolbarbutton:active {
+#main-toolbar toolbarbutton:active {
   background-image: url(chrome://twitter/skin/mac/pressed.png);
+}
+
+window:not([active="true"]) #main-toolbar toolbarbutton {
+  background-image: url(chrome://twitter/skin/mac/inactive.png);
 }
 
 #main-toolbar .toolbarbutton-icon {
   margin: 0;
   padding: 0;
+}
+
+window:not([active="true"]) #main-toolbar .toolbarbutton-icon {
+  opacity: 0.6;
 }
