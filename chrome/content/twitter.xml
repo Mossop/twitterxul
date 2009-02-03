@@ -61,7 +61,10 @@
       </xul:stack>
       <xul:vbox flex="1">
         <xul:label class="title-label" xbl:inherits="value=title"/>
-        <children/>
+        <xul:vbox>
+          <xbl:children/>
+        </xul:vbox>
+        <xul:label class="age-label" xbl:inherits="value=age"/>
       </xul:vbox>
       <xul:vbox class="button-box">
         <xul:button class="reply-button plain" onclick="replyTo(this.parentNode.parentNode)"
@@ -71,9 +74,10 @@
     <implementation>
       <constructor>
       <![CDATA[
+        var strings = document.getElementById("main-strings");
+
         // Format the title based on the message type and recipient
         if (this.type == 2) {
-          var strings = document.getElementById("main-strings");
           if (this.getAttribute("author_type") == 0)
             this.setAttribute("title",
                               strings.getFormattedString("directmessage.sent.title",
@@ -90,19 +94,50 @@
         // Linkify @username and things that look like web links
         var urlreg = new RegExp("(^|[\\.,\\(\\s])((?:http|https|ftp):\\/\\/\\S+)([,\\.\\)]?)");
         var userreg = new RegExp("(^|[\\(\\s])@(\\S+)([,\\.\\)]?)");
-        var text = this.getAttribute("text");
-        text = text.replace(urlreg, "$1<a href='$2'>$2</a>$3");
+        var text = this.text.replace(urlreg, "$1<a href='$2'>$2</a>$3");
         text = text.replace(userreg, "$1<a href='http://twitter.com/$2'>@$2</a>$3");
 
         var div = document.createElementNS("http://www.w3.org/1999/xhtml", "div");
         div.setAttribute("class", "status-div");
         div.innerHTML = text;
         this.appendChild(div);
+
+        // Generate a human readable time
+        Components.utils.import("resource://gre/modules/PluralForm.jsm");
+        var date = Math.floor((Date.now() - this.date) / 60000);
+        if (date >= 1440) {
+          // Display in number of days
+          date = Math.floor(date / 1440);
+          var form = strings.getString("timerange.days");
+          text = PluralForm.get(date, form).replace("#1", date);
+        }
+        else if (date >= 60) {
+          // Display in number of hours
+          date = Math.floor(date / 60);
+          form = strings.getString("timerange.hours");
+          text = PluralForm.get(date, form).replace("#1", date);
+        }
+        else if (date < 1) {
+          // Less than a minute ago
+          text = strings.getString("timerange.seconds");
+        }
+        else {
+          // Display in number of minutes
+          form = strings.getString("timerange.minutes");
+          text = PluralForm.get(date, form).replace("#1", date);
+        }
+        this.setAttribute("age", text);
       ]]>
       </constructor>
 
       <property name="type" readonly="true"
                 onget="return this.getAttribute('type');"/>
+
+      <property name="text" readonly="true"
+                onget="return this.getAttribute('text');"/>
+
+      <property name="date" readonly="true"
+                onget="return this.getAttribute('date') * 1000;"/>
     </implementation>
   </binding>
 

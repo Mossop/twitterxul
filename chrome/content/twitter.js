@@ -118,7 +118,7 @@ function refresh() {
 function replyTo(item) {
   // For now just replace the existing text with a new message
   var messageBox = document.getElementById("message-textbox");
-  if (item.getAttribute("type") == 2)
+  if (item.type == 2)
     messageBox.value = "d " + item.getAttribute("author_username") + " ";
   else
     messageBox.value += "@" + item.getAttribute("author_username") + " ";

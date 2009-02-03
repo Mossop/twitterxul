@@ -183,7 +183,8 @@ TwitterService.prototype = {
     var stmt = this.db.createStatement("INSERT INTO Messages (" + cols + ") VALUES (" + params +")");
     stmt.bindInt64Parameter(0, message.id);
     stmt.bindInt64Parameter(1, type);
-    stmt.bindInt64Parameter(2, message.created);
+    // Bug 476634 means the template builder can't really handle 64 bit values
+    stmt.bindInt64Parameter(2, Math.round(message.created / 1000));
     stmt.bindInt64Parameter(3, message.author.id);
     stmt.bindStringParameter(4, message.text);
     stmt.bindStringParameter(5, message.source);
