@@ -96,6 +96,11 @@
     </toolbar>
   </toolbox>
 
+  <tooltip id="status-tooltip" onpopupshowing="populateTooltip()">
+    <label id="source-label"/>
+    <label id="date-label"/>
+  </tooltip>
+
   <richlistbox datasources="rdf:null" ref="*" querytype="storage"
                id="status-list" flex="1">
     <template>
@@ -135,7 +140,7 @@
                       target_name="?target_name" target_location="?target_location"
                       target_description="?target_description" target_type="?target_type"
                       target_imageURL="?target_imageURL" target_homeURL="?target_homeURL"
-                      class="status-item"/>
+                      class="status-item" tooltip="status-tooltip"/>
       </action>
     </template>
   </richlistbox>

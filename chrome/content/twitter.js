@@ -107,6 +107,23 @@ function onShutdown() {
   service.removeUpdateListener(UpdateListener);
 }
 
+// Called to fill out the tooltip for a status item
+function populateTooltip() {
+  var item = document.tooltipNode;
+  while (item && item.className != "status-item")
+    item = item.parentNode;
+  if (!item)
+    return;
+
+  var source = item.source;
+  source = source.replace("</a>", "");
+  source = source.replace(/<a.*>/, "");
+  source = document.getElementById("main-strings").getFormattedString("source-label.text", [source]);
+
+  document.getElementById("source-label").value = source;
+  document.getElementById("date-label").value = (new Date(item.date)).toLocaleString();
+}
+
 // Called to refresh the status list
 function refresh() {
   var service = Cc["@oxymoronical.com/twitterservice;1"].

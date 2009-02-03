@@ -141,6 +141,9 @@
       <property name="text" readonly="true"
                 onget="return this.getAttribute('text');"/>
 
+      <property name="source" readonly="true"
+                onget="return this.getAttribute('source');"/>
+
       <property name="date" readonly="true"
                 onget="return this.getAttribute('date') * 1000;"/>
     </implementation>
