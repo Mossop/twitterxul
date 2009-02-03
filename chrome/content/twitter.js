@@ -143,7 +143,7 @@ function sendMessage() {
     Twitter.setStatus(service.username, service.password, message);
   }
 
-  document.getElementById("message-texbox").value = "";
+  document.getElementById("message-textbox").value = "";
   afterKeyPressed();
 }
 
