@@ -104,9 +104,7 @@ function selectItemWithId(id) {
   var items = document.getElementsByAttribute("msgid", id);
   if (items && items.length > 0) {
     var list = document.getElementById("status-list");
-    list.selectItem(items[0]);
     list.ensureElementIsVisible(items[0]);
-    list.focus();
   }
 }
 

@@ -30,26 +30,39 @@
   margin: 0;
   border: 0px none;
   -moz-appearance: none;
+  color: inherit;
 }
 
 .status-item {
   -moz-box-align: start;
   padding: 5px;
+  border-bottom: 1px solid #a5a5a5;
 }
 
-.status-item[type="1"][target_type="0"] {
-  background-color: #fce94f;
+/* User posted statuses */
+.status-item[type="0"][author_type="0"],
+.status-item[type="1"][author_type="0"] {
+  background-color: #7ded87;
 }
 
-.status-item[type="2"][target_type="0"] {
-  background-color: #ad7fa8;
-}
-
+/* Sent direct messages */
 .status-item[type="2"][author_type="0"] {
-  background-color: #8ae234;
+  background-color: #86b5fd;
 }
 
-.avatar-stack {
+/* Received replies */
+.status-item[type="1"][target_type="0"] {
+  background-color: #f98487;
+}
+
+/* Received direct messages */
+.status-item[type="2"][target_type="0"] {
+  background-color: #ddde76;
+}
+
+.left-box {
+  padding-right: 2px;
+  border-right: 1px solid #a5a5a5;
   margin-right: 5px;
 }
 
@@ -69,8 +82,15 @@
 }
 
 .title-label {
-  font-size: 120%;
+  font-size: 110%;
   font-weight: bold;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.status-box {
+  margin-top: 2px;
+  margin-bottom: 2px;
 }
 
 .status-div {
@@ -81,8 +101,18 @@
   color: blue;
 }
 
-.button-box {
+.age-label {
+  text-align: right;
+  font-style: italic;
+  font-weight: bold;
+  color: GrayText;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.right-box {
   margin-left: 5px;
+  width: 16px;
 }
 
 .reply-button {

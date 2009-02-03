@@ -47,26 +47,28 @@
           xmlns:xbl="http://www.mozilla.org/xbl">
 
   <binding id="status" extends="chrome://global/content/bindings/richlistbox.xml#richlistitem">
-    <content orient="horizontal">
-      <xul:stack class="avatar-stack">
-        <xul:vbox align="center" pack="center">
-          <xul:image class="loading-image"/>
-        </xul:vbox>
-        <xul:vbox align="start" pack="start">
-          <xul:image class="avatar-image" xbl:inherits="src=author_imageURL"/>
-        </xul:vbox>
-        <xul:vbox align="end" pack="end">
-          <xul:image class="overlay-image"/>
-        </xul:vbox>
-      </xul:stack>
+    <content orient="horizontal" align="stretch">
+      <xul:vbox pack="start" class="left-box">
+        <xul:stack class="avatar-stack">
+          <xul:vbox align="center" pack="center">
+            <xul:image class="loading-image"/>
+          </xul:vbox>
+          <xul:vbox align="start" pack="start">
+            <xul:image class="avatar-image" xbl:inherits="src=author_imageURL"/>
+          </xul:vbox>
+          <xul:vbox align="end" pack="end">
+            <xul:image class="overlay-image"/>
+          </xul:vbox>
+        </xul:stack>
+      </xul:vbox>
       <xul:vbox flex="1">
         <xul:label class="title-label" xbl:inherits="value=title"/>
-        <xul:vbox>
+        <xul:vbox class="status-box">
           <xbl:children/>
         </xul:vbox>
         <xul:label class="age-label" xbl:inherits="value=age"/>
       </xul:vbox>
-      <xul:vbox class="button-box">
+      <xul:vbox class="right-box">
         <xul:button class="reply-button plain" onclick="replyTo(this.parentNode.parentNode)"
                     label="&reply-button.label;" tooltipText="&reply-button.tooltip;"/>
       </xul:vbox>
