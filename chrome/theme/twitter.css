@@ -122,6 +122,7 @@
   min-width: 0;
   min-height: 0;
   list-style-image: url(chrome://twitter/skin/reply.png);
+  margin-bottom: 5px !important;
 }
 
 .reply-button .button-text {
@@ -133,5 +134,23 @@
 }
 
 .status-item[author_type="0"] .reply-button {
+  display: none;
+}
+
+.home-button {
+  -moz-appearance: none;
+  width: 16px;
+  height: 16px;
+  min-width: 0;
+  min-height: 0;
+  list-style-image: url(chrome://twitter/skin/home.png);
+  margin-bottom: 5px !important;
+}
+
+.home-button .button-text {
+  display: none;
+}
+
+.status-item[author_homeURL=""] .home-button {
   display: none;
 }

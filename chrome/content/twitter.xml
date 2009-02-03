@@ -70,7 +70,9 @@
       </xul:vbox>
       <xul:vbox class="right-box">
         <xul:button class="reply-button plain" onclick="replyTo(this.parentNode.parentNode)"
-                    label="&reply-button.label;" tooltipText="&reply-button.tooltip;"/>
+                    label="&reply-button.label;" tooltiptext="&reply-button.tooltip;"/>
+        <xul:button class="home-button plain" onclick="openURL(this.parentNode.parentNode.getAttribute('author_homeURL'))"
+                    label="&home-button.label;" tooltiptext="&home-button.tooltip;"/>
       </xul:vbox>
     </content>
     <implementation>
