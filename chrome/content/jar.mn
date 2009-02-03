@@ -1,5 +1,15 @@
 twitter.jar:
 % content twitter %content/
+% overlay chrome://twitter/content/twitter.xul chrome://twitter/content/mainmenu-osx.xul os=Darwin
+% overlay chrome://twitter/content/twitter.xul chrome://twitter/content/mainmenu.xul os!=Darwin
+% overlay chrome://twitter/content/options.xul chrome://twitter/content/mainmenu-osx.xul os=Darwin
+% overlay chrome://twitter/content/about.xul chrome://twitter/content/mainmenu-osx.xul os=Darwin
+% overlay chrome://global/content/config.xul chrome://twitter/content/mainmenu-osx.xul os=Darwin
+% overlay chrome://mozapps/content/extensions/extensions.xul chrome://twitter/content/mainmenu-osx.xul os=Darwin
+% overlay chrome://global/content/console.xul chrome://twitter/content/mainmenu-osx.xul os=Darwin
+* content/mainmenu.xul
+* content/mainmenu-osx.xul
+* content/mainmenu.js
 * content/twitter.xul
 * content/twitter.js
 * content/twitter.xml

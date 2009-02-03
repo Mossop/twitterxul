@@ -2,6 +2,8 @@
 
 @AB_CD@.jar:
 % locale twitter @AB_CD@ %
+  menu.dtd                             (@AB_CD@/menu.dtd)
+  menu.properties                      (@AB_CD@/menu.properties)
   twitter.dtd                          (@AB_CD@/twitter.dtd)
   twitter.properties                   (@AB_CD@/twitter.properties)
   options.dtd                          (@AB_CD@/options.dtd)

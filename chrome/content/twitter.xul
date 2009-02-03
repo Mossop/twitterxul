@@ -55,34 +55,6 @@
 
   <stringbundle id="main-strings" src="chrome://twitter/locale/twitter.properties"/>
 
-  <menubar>
-    <menu id="tools-menu" label="&tools-menu.label;" accesskey="&tools-menu.accesskey;">
-      <menupopup>
-        <menuitem id="addons-menu" oncommand="openAddons()" class="menuitem-iconic"
-                  label="&addons-menu.label;" accesskey="&addons-menu.accesskey;"/>
-        <menuitem id="console-menu" oncommand="openErrorConsole()" class="menuitem-iconic"
-                  label="&console-menu.label;" accesskey="&console-menu.accesskey;"/>
-        <menuitem id="config-menu" oncommand="openConfig()" class="menuitem-iconic"
-                  label="&config-menu.label;" accesskey="&config-menu.accesskey;"/>
-        <menuseparator id="inspector-separator" hidden="true"/>
-        <menuitem id="inspector-menu" oncommand="openDOMInspector()"
-                  class="menuitem-iconic" hidden="true"
-                  label="&inspector-menu.label;" accesskey="&inspector-menu.accesskey;"/>
-        <menuseparator id="options-separator"/>
-        <menuitem id="menu_preferences" oncommand="openOptions()" class="menuitem-iconic"
-                  label="&options-menu.label;" accesskey="&options-menu.accesskey;"/>
-      </menupopup>
-    </menu>
-    <menu id="help-menu" label="&help-menu.label;" accesskey="&help-menu.accesskey;">
-      <menupopup onpopupshowing="buildHelpMenu();">
-        <menuitem id="update-menu" oncommand="openUpdates()" class="menuitem-iconic"
-                  label="&update-menu.label;" accesskey="&update-menu.accesskey;"/>
-        <menuitem id="aboutName" oncommand="openAbout()"
-                  label="&about-menu.label;" accesskey="&about-menu.accesskey;"/>
-      </menupopup>
-    </menu>
-  </menubar>
-
   <toolbox>
     <toolbar class="chromeclass-toolbar" align="center" id="main-toolbar">
       <toolbarbutton label="&refresh-button.label;" tooltipText="&refresh-button.tooltip;"

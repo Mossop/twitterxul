@@ -1,0 +1,24 @@
+<!ENTITY tools-menu.label              "Tools">
+<!ENTITY tools-menu.accesskey          "T">
+
+<!ENTITY addons-menu.label             "Add-ons">
+<!ENTITY addons-menu.accesskey         "A">
+<!ENTITY console-menu.label            "Error Console">
+<!ENTITY console-menu.accesskey        "E">
+<!ENTITY config-menu.label             "Advanced Configuration">
+<!ENTITY config-menu.accesskey         "C">
+<!ENTITY inspector-menu.label          "DOM Inspector">
+<!ENTITY inspector-menu.accesskey      "I">
+<!ENTITY options-menu.label            "Options…">
+<!ENTITY options-menu.accesskey        "O">
+<!ENTITY preferences-menu.label        "Preferences…">
+<!ENTITY preferences-menu.accesskey    "P">
+
+
+<!ENTITY help-menu.label               "Help">
+<!ENTITY help-menu.accesskey           "H">
+
+<!ENTITY update-menu.label             "Check for Updates…">
+<!ENTITY update-menu.accesskey         "C">
+<!ENTITY about-menu.label              "About &brandShortName;">
+<!ENTITY about-menu.accesskey          "A">
