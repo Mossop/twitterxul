@@ -77,6 +77,14 @@ function onStartup() {
 
   // Reusing the same database connection is much faster
   document.getElementById("status-list").builder.datasource = service.database;
+
+  // Load a stylesheet for overriding scrollbars
+  var ios = Cc["@mozilla.org/network/io-service;1"].
+            getService(Ci.nsIIOService);
+  var styleSheets = Cc["@mozilla.org/content/style-sheet-service;1"].
+                    getService(Ci.nsIStyleSheetService);
+  var styleURI = ios.newURI("chrome://twitter/skin/scrollbars.css", null, null);
+  styleSheets.loadAndRegisterSheet(styleURI, styleSheets.AGENT_SHEET);
 }
 
 // Called during window close
