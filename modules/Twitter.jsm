@@ -63,11 +63,13 @@ function safecall(callback) {
 function Authenticator(username, password) {
   this.username = username;
   this.password = password;
+  this.count = 0;
 }
 
 Authenticator.prototype = {
   username: null,
   password: null,
+  count: null,
 
   // nsIAuthPrompt implementation
   prompt: function(dialogTitle, text, passwordRealm, savePasword, defaultText,
@@ -82,6 +84,9 @@ Authenticator.prototype = {
 
   promptUsernameAndPassword: function(dialogTitle, text, passwordRealm,
                                       savePasword, username, password) {
+    this.count++;
+    if (this.count > 1)
+      return false;
     username.value = this.username;
     password.value = this.password;
     return true;
@@ -93,6 +98,9 @@ Authenticator.prototype = {
   },
 
   promptAuth: function(channel, level, authInfo) {
+    this.count++;
+    if (this.count > 1)
+      return false;
     authInfo.username = this.username;
     authInfo.password = this.password;
     return true;
