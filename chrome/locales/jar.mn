@@ -4,3 +4,6 @@
 % locale twitter @AB_CD@ %
   twitter.dtd                          (@AB_CD@/twitter.dtd)
   twitter.properties                   (@AB_CD@/twitter.properties)
+  options.dtd                          (@AB_CD@/options.dtd)
+  options.properties                   (@AB_CD@/options.properties)
+  about.dtd                            (@AB_CD@/about.dtd)

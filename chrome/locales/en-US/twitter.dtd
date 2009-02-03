@@ -13,6 +13,8 @@
 <!ENTITY config-menu.accesskey         "C">
 <!ENTITY inspector-menu.label          "DOM Inspector">
 <!ENTITY inspector-menu.accesskey      "I">
+<!ENTITY options-menu.label            "Options">
+<!ENTITY options-menu.accesskey        "O">
 
 
 <!ENTITY help-menu.label               "Help">
@@ -25,6 +27,8 @@
 
 <!ENTITY refresh-button.label          "Refresh">
 <!ENTITY refresh-button.tooltip        "Refresh">
+<!ENTITY options-button.label          "Options">
+<!ENTITY options-button.tooltip        "Options">
 <!ENTITY send-button.label             "Send">
 <!ENTITY reply-button.label            "Reply">
 <!ENTITY reply-button.tooltip          "Reply">

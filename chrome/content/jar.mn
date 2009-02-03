@@ -4,4 +4,7 @@ twitter.jar:
 * content/twitter.js
 * content/twitter.xml
 * content/twitter.css
+* content/options.xul
+* content/options.js
+* content/about.xul
 * content/hiddenWindow.xul

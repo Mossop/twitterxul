@@ -253,6 +253,12 @@ function openDOMInspector() {
                     "chrome,all,dialog=no", document);
 }
 
+// Opens the options dialog
+function openOptions() {
+  openWindowForType("Twitter:Options", "chrome://twitter/content/options.xul",
+                    "chrome,dialog,centerscreen");
+}
+
 // Opens the about dialog
 function openAbout() {
   openWindowForType("Twitter:About", "chrome://twitter/content/about.xul",

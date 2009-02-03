@@ -68,6 +68,9 @@
         <menuitem id="inspector-menu" oncommand="openDOMInspector()"
                   class="menuitem-iconic" hidden="true"
                   label="&inspector-menu.label;" accesskey="&inspector-menu.accesskey;"/>
+        <menuseparator id="options-separator"/>
+        <menuitem id="menu_preferences" oncommand="openOptions()" class="menuitem-iconic"
+                  label="&options-menu.label;" accesskey="&options-menu.accesskey;"/>
       </menupopup>
     </menu>
     <menu id="help-menu" label="&help-menu.label;" accesskey="&help-menu.accesskey;">
@@ -84,6 +87,8 @@
     <toolbar class="chromeclass-toolbar" align="center" id="main-toolbar">
       <toolbarbutton label="&refresh-button.label;" tooltipText="&refresh-button.tooltip;"
                      id="refresh-button" oncommand="refresh()"/>
+      <toolbarbutton label="&options-button.label;" tooltipText="&options-button.tooltip;"
+                     id="options-button" oncommand="openOptions()"/>
       <toolbarspacer flex="1"/>
       <toolbaritem>
         <image id="throbber-image"/>

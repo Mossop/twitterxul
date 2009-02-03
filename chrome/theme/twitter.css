@@ -10,6 +10,14 @@
   display: none;
 }
 
+#options-button {
+  list-style-image: url(chrome://twitter/skin/options.png);
+}
+
+#options-button .toolbarbutton-text {
+  display: none;
+}
+
 #throbber-image {
   list-style-image: url(chrome://global/skin/icons/notloading_16.png);
 }

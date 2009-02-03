@@ -65,6 +65,8 @@ TwitterService.prototype = {
   db: null,
   // The current username
   user: null,
+  // The current password
+  pass: null,
   // The refreshrate in seconds
   refreshRate: null,
   // An XPCOM timer used to trigger refreshes
@@ -85,11 +87,10 @@ TwitterService.prototype = {
                  getBranch("twitter.").
                  QueryInterface(Ci.nsIPrefBranch2);
     this.prefs.addObserver("", this, false);
-    try {
+    if (this.prefs.prefHasUserValue("username"))
       this.user = this.prefs.getCharPref("username");
-    }
-    catch (e) {
-    }
+    if (this.prefs.prefHasUserValue("password"))
+      this.pass = this.prefs.getCharPref("password");
     this.refreshRate = this.prefs.getIntPref("refreshRate");
 
     var dbfile = Cc["@mozilla.org/file/directory_service;1"].
@@ -285,6 +286,24 @@ TwitterService.prototype = {
     });
   },
 
+  scheduleRefresh: function() {
+    if (this.user && this.pass) {
+      if (this.prefs.prefHasUserValue("lastUpdate")) {
+        var next = this.prefs.getIntPref("lastUpdate");
+        next += this.refreshRate;
+        next -= Date.now() / 1000;
+        if (next <= 0)
+          this.refresh();
+        else
+          this.timer.init(this, next * 1000, Ci.nsITimer.TYPE_ONE_SHOT);
+      }
+      else {
+        // Never refreshed before, just do it
+        this.refresh();
+      }
+    }
+  },
+
   // twITwitterService implementation
   get database() {
     return this.db;
@@ -299,7 +318,7 @@ TwitterService.prototype = {
   },
 
   get password() {
-    return this.prefs.getCharPref("password");
+    return this.pass;
   },
 
   refresh: function() {
@@ -341,21 +360,7 @@ TwitterService.prototype = {
       this.startup();
       break;
     case "final-ui-startup":
-      if (this.user) {
-        try {
-          var next = this.prefs.getIntPref("lastUpdate");
-          next += this.refreshRate;
-          next -= Date.now() / 1000;
-          if (next <= 0)
-            this.refresh();
-          else
-            this.timer.init(this, next * 1000, Ci.nsITimer.TYPE_ONE_SHOT);
-        }
-        catch (e) {
-          // We'll get here if the lastUpdate pref hasn't been set yet
-          this.refresh();
-        }
-      }
+      this.scheduleRefresh();
       break;
     case "xpcom-shutdown":
       var observerService = Cc["@mozilla.org/observer-service;1"].
@@ -374,15 +379,40 @@ TwitterService.prototype = {
       switch (data) {
       case "username":
         var olduser = this.user;
-        this.user = this.prefs.getCharPref("username");
-        if (!olduser || (this.user.toLowerCase() != olduser.toLowerCase())) {
+        this.user = null;
+        if (this.prefs.prefHasUserValue("username"))
+          this.user = this.prefs.getCharPref("username");
+
+        // If the user has changed then delete the database
+        if (!this.user ||
+            (olduser && (this.user.toLowerCase() != olduser.toLowerCase()))) {
           this.db.createStatement("DELETE FROM People").execute();
           this.db.createStatement("DELETE FROM Messages").execute();
-          this.refresh();
         }
+
+        if (!this.user)
+          this.timer.cancel();
+        else if (!olduser)
+          this.scheduleRefresh();
+        break;
+      case "password":
+        var oldpass = this.pass;
+        this.pass = null;
+        if (this.prefs.prefHasUserValue("password"))
+          this.pass = this.prefs.getCharPref("password");
+
+        if (!this.pass)
+          this.timer.cancel();
+        else if (!oldpass)
+          this.scheduleRefresh();
         break;
       case "refreshRate":
+        var oldrate = this.refreshRate;
         this.refreshRate = this.prefs.getIntPref("refreshRate");
+        if (oldrate != this.refreshRate) {
+          this.timer.cancel();
+          this.scheduleRefresh();
+        }
         break;
       }
       break;

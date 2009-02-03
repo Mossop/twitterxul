@@ -1,0 +1,5 @@
+<!ENTITY options-window.title          "Options">
+<!ENTITY options-window.style          "width: 30em;">
+
+<!ENTITY login-button.label            "Change…">
+<!ENTITY login-button.accesskey        "C">

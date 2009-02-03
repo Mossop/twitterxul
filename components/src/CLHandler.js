@@ -54,6 +54,29 @@ CommandLineHandler.prototype = {
                        getService(Ci.nsIAppStartup);
       appStartup.enterLastWindowClosingSurvivalArea();
       commandLine.preventDefault = true;
+
+      var prefService = Cc["@mozilla.org/preferences-service;1"].
+                        getService(Ci.nsIPrefBranch);
+      if (!prefService.prefHasUserValue("twitter.username")) {
+        var bs = Cc["@mozilla.org/intl/stringbundle;1"].
+                 getService(Ci.nsIStringBundleService);
+        var bundle = bs.createBundle("chrome://twitter/locale/options.properties");
+
+        var prompt = Cc["@mozilla.org/embedcomp/prompt-service;1"].
+                     getService(Ci.nsIPromptService);
+        var user = {};
+        var pass = {};
+        if (prompt.promptUsernameAndPassword(null,
+                                             bundle.GetStringFromName("username.title"),
+                                             bundle.GetStringFromName("username.text"),
+                                             user, pass, null, {})) {
+          prefService.setCharPref("twitter.password", pass.value);
+          prefService.setCharPref("twitter.username", user.value);
+        }
+        else {
+          throw Cr.NS_ERROR_ABORT;
+        }
+      }
     }
   },
 
