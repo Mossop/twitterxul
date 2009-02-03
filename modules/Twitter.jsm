@@ -394,11 +394,15 @@ var Twitter = {
    *        The second is any error that occured during the request. Only
    *        one of the arguments will be non-null.
    * @param since
-   *        Unused.
+   *        Retrieve all messages with an id greater than this. May be null.
    */
   fetchSentDirectMessages: function(username, password, callback, since) {
+    var url = "http://twitter.com/direct_messages.json";
+    if (since)
+      url += "?since_id=" + since;
+
     var parser = new DirectMessageParser(callback);
-    parser.startRequest(username, password, "http://twitter.com/direct_messages/sent.json");
+    parser.startRequest(username, password, url);
   },
 
   /**
@@ -413,11 +417,15 @@ var Twitter = {
    *        The second is any error that occured during the request. Only
    *        one of the arguments will be non-null.
    * @param since
-   *        Unused.
+   *        Retrieve all messages with an id greater than this. May be null.
    */
   fetchReceivedDirectMessages: function(username, password, callback, since) {
+    var url = "http://twitter.com/direct_messages/sent.json";
+    if (since)
+      url += "?since_id=" + since;
+
     var parser = new DirectMessageParser(callback);
-    parser.startRequest(username, password, "http://twitter.com/direct_messages.json");
+    parser.startRequest(username, password, url);
   },
 
   /**
@@ -432,11 +440,15 @@ var Twitter = {
    *        The second is any error that occured during the request. Only
    *        one of the arguments will be non-null.
    * @param since
-   *        Unused.
+   *        Retrieve all messages with an id greater than this. May be null.
    */
   fetchUserTimeline: function(username, password, callback, since) {
+    var url = "http://twitter.com/statuses/user_timeline.json";
+    if (since)
+      url += "?since_id=" + since;
+
     var parser = new TimelineParser(callback);
-    parser.startRequest(username, password, "http://twitter.com/statuses/user_timeline.json");
+    parser.startRequest(username, password, url);
   },
 
   /**
@@ -451,10 +463,14 @@ var Twitter = {
    *        The second is any error that occured during the request. Only
    *        one of the arguments will be non-null.
    * @param since
-   *        Unused.
+   *        Retrieve all messages with an id greater than this. May be null.
    */
   fetchFriendsTimeline: function(username, password, callback, since) {
+    var url = "http://twitter.com/statuses/friends_timeline.json";
+    if (since)
+      url += "?since_id=" + since;
+
     var parser = new TimelineParser(callback);
-    parser.startRequest(username, password, "http://twitter.com/statuses/friends_timeline.json");
+    parser.startRequest(username, password, url);
   }
 };

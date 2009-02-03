@@ -328,18 +328,49 @@ TwitterService.prototype = {
 
     this.timer.cancel();
 
-    var pass = this.password;
-
     this.callListeners("onUpdateStarted");
+
+    var statusSince, sentSince, receivedSince;
+
+    // Pull the most recent id for each message type out of the database.
+    var stmt = this.db.createStatement("SELECT id FROM people WHERE username=?");
+    stmt.bindStringParameter(0, this.user);
+    if (stmt.executeStep()) {
+      var id = stmt.getInt64(0);
+      stmt.reset();
+
+      stmt = this.db.createStatement("SELECT MAX(id) FROM Messages WHERE type=? AND author=?");
+      stmt.bindInt64Parameter(0, TYPE_DIRECT);
+      stmt.bindInt64Parameter(1, id);
+      if (stmt.executeStep())
+        sentSince = stmt.getInt64(0);
+      stmt.reset();
+
+      stmt = this.db.createStatement("SELECT MAX(id) FROM Messages WHERE type=? AND author<>?");
+      stmt.bindInt64Parameter(0, TYPE_DIRECT);
+      stmt.bindInt64Parameter(1, id);
+      if (stmt.executeStep())
+        receivedSince = stmt.getInt64(0);
+      stmt.reset();
+
+      stmt = this.db.createStatement("SELECT MAX(id) FROM Messages WHERE type<?");
+      stmt.bindInt64Parameter(0, TYPE_DIRECT);
+      if (stmt.executeStep())
+        statusSince = stmt.getInt64(0);
+      stmt.reset();
+    }
+    else {
+      stmt.reset();
+    }
 
     this.addedItems = [];
     var self = this;
     var callback = function(items, error) {
       self.twitterCallback(items, error);
     }
-    Twitter.fetchFriendsTimeline(this.user, pass, callback);
-    Twitter.fetchReceivedDirectMessages(this.user, pass, callback);
-    Twitter.fetchSentDirectMessages(this.user, pass, callback);
+    Twitter.fetchFriendsTimeline(this.user, this.pass, callback, statusSince);
+    Twitter.fetchReceivedDirectMessages(this.user, this.pass, callback, receivedSince);
+    Twitter.fetchSentDirectMessages(this.user, this.pass, callback, sentSince);
     this.opCount += 3;
   },
 
