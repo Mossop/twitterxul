@@ -85,6 +85,11 @@ function onStartup() {
                     getService(Ci.nsIStyleSheetService);
   var styleURI = ios.newURI("chrome://twitter/skin/scrollbars.css", null, null);
   styleSheets.loadAndRegisterSheet(styleURI, styleSheets.AGENT_SHEET);
+
+  if ("arguments" in window && window.arguments.length > 0) {
+    if (!(window.arguments[0] instanceof Ci.nsICommandLine))
+      selectItemWithId(window.arguments[0]);
+  }
 }
 
 // Called during window close
@@ -92,6 +97,17 @@ function onShutdown() {
   var service = Cc["@oxymoronical.com/twitterservice;1"].
                 getService(Ci.twITwitterService);
   service.removeUpdateListener(UpdateListener);
+}
+
+// Selects the status with the given id.
+function selectItemWithId(id) {
+  var items = document.getElementsByAttribute("msgid", id);
+  if (items && items.length > 0) {
+    var list = document.getElementById("status-list");
+    list.selectItem(items[0]);
+    list.ensureElementIsVisible(items[0]);
+    list.focus();
+  }
 }
 
 // Called to fill out the tooltip for a status item

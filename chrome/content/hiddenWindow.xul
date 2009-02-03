@@ -59,11 +59,30 @@ var UpdateListener = {
       if (item.author.username != service.username)
         alerts.showAlertNotification(item.author.imageURL,
                                      item.author.name,
-                                     item.text);
-    });
+                                     item.text,
+                                     true, item.id, this);
+    }, this);
   },
 
   onUpdateEnded: function() {
+  },
+
+  observe: function(subject, topic, data) {
+    if (topic != "alertclickcallback")
+      return;
+
+    var topWindow = Cc['@mozilla.org/appshell/window-mediator;1'].
+                    getService(Components.interfaces.nsIWindowMediator).
+                    getMostRecentWindow("Twitter:Main");
+  
+    if (topWindow) {
+      topWindow.focus();
+      topWindow.selectItemWithId(data);
+    }
+    else {
+      window.openDialog("chrome://twitter/content/", "_blank",
+                        "chrome,resizable,centerscreen,dialog=no", data);
+    }
   }
 };
 
