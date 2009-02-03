@@ -2,20 +2,16 @@
   padding: 5px;
 }
 
+#main-toolbar .toolbarbutton-text {
+  display: none;
+}
+
 #refresh-button {
   list-style-image: url(chrome://twitter/skin/refresh.png);
 }
 
-#refresh-button .toolbarbutton-text {
-  display: none;
-}
-
 #options-button {
   list-style-image: url(chrome://twitter/skin/options.png);
-}
-
-#options-button .toolbarbutton-text {
-  display: none;
 }
 
 #throbber-image {

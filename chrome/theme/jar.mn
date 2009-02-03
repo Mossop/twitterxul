@@ -1,5 +1,6 @@
 classic.jar:
 % skin twitter classic/1.0 %
+% style chrome://twitter/content/twitter.xul chrome://twitter/skin/mac/twitter.css os=Darwin
   twitter.css
   message.png
   message-reply.png
@@ -7,3 +8,6 @@ classic.jar:
   options.png
   reply.png
   home.png
+  mac/twitter.css             (mac/twitter.css)
+  mac/button.png              (mac/button.png)
+  mac/pressed.png             (mac/pressed.png)

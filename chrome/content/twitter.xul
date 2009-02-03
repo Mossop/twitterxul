@@ -57,7 +57,7 @@
   <stringbundle id="main-strings" src="chrome://twitter/locale/twitter.properties"/>
 
   <toolbox>
-    <toolbar class="chromeclass-toolbar" align="center" id="main-toolbar">
+    <toolbar class="chromeclass-toolbar" mode="icons" align="center" id="main-toolbar">
       <toolbarbutton label="&refresh-button.label;" tooltipText="&refresh-button.tooltip;"
                      id="refresh-button" oncommand="refresh()"/>
       <toolbarbutton label="&options-button.label;" tooltipText="&options-button.tooltip;"
