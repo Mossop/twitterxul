@@ -1,24 +1,16 @@
 toolbarbutton {
   width: 31px;
   height: 23px;
-  background-image: url(chrome://twitter/skin/button.png);
+  background-image: url(chrome://twitter/skin/mac/button.png);
   border: 0px none;
   padding: 3px 7px 4px 8px;
 }
 
 toolbarbutton:active {
-  background-image: url(chrome://twitter/skin/pressed.png);
+  background-image: url(chrome://twitter/skin/mac/pressed.png);
 }
 
 #main-toolbar .toolbarbutton-icon {
   margin: 0;
   padding: 0;
-}
-
-#refresh-button {
-  list-style-image: url(chrome://twitter/skin/mac/refresh.png);
-}
-
-#options-button {
-  list-style-image: url(chrome://twitter/skin/mac/options.png);
 }
