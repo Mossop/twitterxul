@@ -14,3 +14,11 @@ toolbarbutton:active {
   margin: 0;
   padding: 0;
 }
+
+#refresh-button {
+  list-style-image: url(chrome://twitter/skin/mac/refresh.png);
+}
+
+#options-button {
+  list-style-image: url(chrome://twitter/skin/mac/options.png);
+}
