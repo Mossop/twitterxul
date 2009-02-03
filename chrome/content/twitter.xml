@@ -98,7 +98,6 @@
         // Escape out any tags to prevent remote exploits
         var text = this.text.replace("<", "&lt;");
         text = this.text.replace(">", "&gt;");
-        text = this.text.replace("&", "&amp;");
 
         // Linkify @username and things that look like web links
         var urlreg = new RegExp("(^|[\\.,\\(\\s])((?:http|https|ftp):\\/\\/\\S+)([,\\.\\)]?)");
