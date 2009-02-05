@@ -49,6 +49,31 @@ function LOG(str) {
 // A regex to detect "d <username> <message>"
 var gDirectMessage = /^d\s+(\S*)\s+(.*)/;
 
+var gDBFields = "Messages.id AS id," +
+                "Messages.type AS type," +
+                "Messages.created AS date," +
+                "Messages.text AS text," +
+                "Messages.source AS source," +
+                "Author.id AS author_id," +
+                "Author.username AS author_username," +
+                "Author.type AS author_type," +
+                "Author.name AS author_name," +
+                "Author.location AS author_location," +
+                "Author.description AS author_description," +
+                "Author.imageURL AS author_imageURL," +
+                "Author.homeURL AS author_homeURL," +
+                "Target.id AS target_id," +
+                "Target.username AS target_username," +
+                "Target.type AS target_type," +
+                "Target.name AS target_name," +
+                "Target.location AS target_location," +
+                "Target.description AS target_description," +
+                "Target.imageURL AS target_imageURL," +
+                "Target.homeURL AS target_homeURL";
+
+var gDBTables = "Messages JOIN People AS Author ON Messages.author=Author.id " +
+                "LEFT JOIN People AS Target ON Messages.target=Target.id";
+
 // The update listener updates the throbber and rebuilds the status list if
 // new items have been added.
 var UpdateListener = {
@@ -74,6 +99,16 @@ function onStartup() {
   document.documentElement.setAttribute("busy", service.busy ? "true" : "false");
   document.getElementById("refresh-button").disabled = service.busy;
   service.addUpdateListener(UpdateListener);
+
+  var prefs = Cc["@mozilla.org/preferences-service;1"].
+              getService(Ci.nsIPrefService).
+              getBranch("twitter.");
+  document.getElementById("direct-checkbox").checked = prefs.getBoolPref("display.direct");
+  document.getElementById("reply-checkbox").checked = prefs.getBoolPref("display.reply");
+  document.getElementById("own-checkbox").checked = prefs.getBoolPref("display.own");
+  document.getElementById("status-checkbox").checked = prefs.getBoolPref("display.status");
+  document.getElementById("limit-menulist").value = prefs.getIntPref("display.count");
+  buildQuery();
 
   // Reusing the same database connection is much faster
   document.getElementById("status-list").builder.datasource = service.database;
@@ -106,6 +141,41 @@ function selectItemWithId(id) {
     var list = document.getElementById("status-list");
     list.ensureElementIsVisible(items[0]);
   }
+}
+
+// Called whenever the SQL query needs to be generated
+function buildQuery() {
+  var where = "";
+  if (document.getElementById("own-checkbox").checked)
+    where += " OR (Messages.type in (0,1) AND Author.type=0)";
+  if (document.getElementById("status-checkbox").checked)
+    where += " OR (Messages.type=0 AND Author.type<>0) OR (Messages.type=1 AND Author.type<>0 AND Target.type<>0)";
+  if (document.getElementById("reply-checkbox").checked)
+    where += " OR (Messages.type=1 AND Target.type=0)";
+  if (document.getElementById("direct-checkbox").checked)
+    where += " OR Messages.type=2";
+  if (where)
+    where = where.substring(4);
+  else
+    where = "0=1";
+  var query="SELECT " + gDBFields + " FROM " + gDBTables + " WHERE " + where +
+            " ORDER BY created DESC " + 
+            "LIMIT " + document.getElementById("limit-menulist").value;
+  document.getElementById("status-query").textContent = query;
+}
+
+// Called when some of the filter UI has been changed
+function updateFilter() {
+  var prefs = Cc["@mozilla.org/preferences-service;1"].
+              getService(Ci.nsIPrefService).
+              getBranch("twitter.");
+  prefs.setBoolPref("display.direct", document.getElementById("direct-checkbox").checked);
+  prefs.setBoolPref("display.reply", document.getElementById("reply-checkbox").checked);
+  prefs.setBoolPref("display.own", document.getElementById("own-checkbox").checked);
+  prefs.setBoolPref("display.status", document.getElementById("status-checkbox").checked);
+  prefs.setIntPref("display.count", document.getElementById("limit-menulist").value);
+  buildQuery();
+  document.getElementById("status-list").builder.rebuild();
 }
 
 // Called to fill out the tooltip for a status item

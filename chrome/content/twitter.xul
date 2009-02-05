@@ -58,10 +58,35 @@
 
   <toolbox>
     <toolbar class="chromeclass-toolbar" mode="icons" align="center" id="main-toolbar">
-      <toolbarbutton label="&refresh-button.label;" tooltipText="&refresh-button.tooltip;"
+      <toolbarbutton label="&refresh-button.label;" tooltiptext="&refresh-button.tooltip;"
                      id="refresh-button" oncommand="refresh()"/>
-      <toolbarbutton label="&options-button.label;" tooltipText="&options-button.tooltip;"
+      <toolbarbutton label="&options-button.label;" tooltiptext="&options-button.tooltip;"
                      id="options-button" oncommand="TwitterMenu.openOptions()"/>
+      <toolbarbutton label="&filter-button.label;" tooltiptext="&filter-button.tooltip;"
+                     id="filter-button" type="menu">
+        <panel tooltiptext="">
+          <checkbox id="direct-checkbox" label="&direct-checkbox.label;"
+                    oncommand="updateFilter()"/>
+          <checkbox id="reply-checkbox" label="&reply-checkbox.label;"
+                    oncommand="updateFilter()"/>
+          <checkbox id="own-checkbox" label="&own-checkbox.label;"
+                    oncommand="updateFilter()"/>
+          <checkbox id="status-checkbox" label="&status-checkbox.label;"
+                    oncommand="updateFilter()"/>
+          <separator class="groove"/>
+          <hbox align="center">
+            <label value="&limit-label.label;" control="limit-menulist"/>
+            <menulist id="limit-menulist" oncommand="updateFilter()">
+              <menupopup>
+                <menuitem label="20" value="20"/>
+                <menuitem label="50" value="50"/>
+                <menuitem label="100" value="100"/>
+                <menuitem label="200" value="200"/>
+              </menupopup>
+            </menulist>
+          </hbox>
+        </panel>
+      </toolbarbutton>
       <toolbarspacer flex="1"/>
       <toolbaritem>
         <image id="throbber-image"/>
@@ -77,32 +102,7 @@
   <richlistbox datasources="rdf:null" ref="*" querytype="storage"
                id="status-list" flex="1" disabled="true">
     <template>
-      <query>
-        SELECT Messages.id AS id,
-               Messages.type AS type,
-               Messages.created AS date,
-               Messages.text AS text,
-               Messages.source AS source,
-               Author.id AS author_id,
-               Author.username AS author_username,
-               Author.type AS author_type,
-               Author.name AS author_name,
-               Author.location AS author_location,
-               Author.description AS author_description,
-               Author.imageURL AS author_imageURL,
-               Author.homeURL AS author_homeURL,
-               Target.id AS target_id,
-               Target.username AS target_username,
-               Target.type AS target_type,
-               Target.name AS target_name,
-               Target.location AS target_location,
-               Target.description AS target_description,
-               Target.imageURL AS target_imageURL,
-               Target.homeURL AS target_homeURL
-               FROM Messages JOIN People AS Author ON Messages.author=Author.id
-                               LEFT JOIN People AS Target ON Messages.target=Target.id
-                               ORDER BY created DESC LIMIT 50
-      </query>
+      <query id="status-query"/>
       <action>
         <richlistitem uri="?" msgid="?id" type="?type" date="?date" text="?text" source="?source"
                       author_id="?author_id" author_username="?author_username"

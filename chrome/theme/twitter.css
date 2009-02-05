@@ -14,6 +14,14 @@
   list-style-image: url(chrome://twitter/skin/options.png);
 }
 
+#filter-button .toolbarbutton-icon {
+  list-style-image: url(chrome://twitter/skin/filter.png);
+}
+
+#filter-button panel {
+  padding: 10px;
+}
+
 #throbber-image {
   list-style-image: url(chrome://global/skin/icons/notloading_16.png);
 }

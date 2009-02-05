@@ -29,3 +29,8 @@ pref("javascript.options.strict", true);
 pref("browser.dom.window.dump.enabled", true);
 
 pref("twitter.refreshRate", 300);
+pref("twitter.display.count", 50);
+pref("twitter.display.direct", true);
+pref("twitter.display.reply", true);
+pref("twitter.display.own", true);
+pref("twitter.display.status", true);

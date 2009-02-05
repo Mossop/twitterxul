@@ -4,7 +4,8 @@
   padding: 1px 0px 2px 0px;
 }
 
-#main-toolbar toolbarbutton:active {
+#main-toolbar toolbarbutton:active,
+#main-toolbar toolbarbutton[open] {
   -moz-border-image: url(chrome://twitter/skin/mac/pressed.png) 2 7 2 7 stretch;
 }
 

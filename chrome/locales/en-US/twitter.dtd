@@ -5,6 +5,15 @@
 <!ENTITY refresh-button.tooltip        "Refresh">
 <!ENTITY options-button.label          "Options">
 <!ENTITY options-button.tooltip        "Options">
+<!ENTITY filter-button.label           "Filter">
+<!ENTITY filter-button.tooltip         "Filter">
+
+<!ENTITY direct-checkbox.label         "Direct Messages">
+<!ENTITY reply-checkbox.label          "Replies to you">
+<!ENTITY own-checkbox.label            "Statuses you posted">
+<!ENTITY status-checkbox.label         "Other statuses">
+<!ENTITY limit-label.label             "Items to display:">
+
 <!ENTITY send-button.label             "Send">
 <!ENTITY reply-button.label            "Reply">
 <!ENTITY reply-button.tooltip          "Reply to message">
