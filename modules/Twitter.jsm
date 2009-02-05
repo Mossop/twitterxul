@@ -42,6 +42,8 @@ const Cr = Components.results;
 
 Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
 
+const TWITTER = "https://twitter.com";
+
 function LOG(str) {
   dump("Twitter.jsm: " + str + "\n");
 }
@@ -326,6 +328,27 @@ DirectMessageParser.prototype.parseData = function(items) {
   return results;
 };
 
+// A Parser for direct messages
+function PersonParser(callback) {
+  Parser.call(this, callback);
+}
+
+PersonParser.prototype = new Parser();
+PersonParser.prototype.parseData = function(items) {
+  if (!(items instanceof Array)) {
+    LOG("JSON data wasn't an array");
+    throw "Unexpected data returned from server.";
+  }
+
+  var results = [];
+  items.forEach(function(item) {
+    var person = new Person();
+    person._parse(item);
+    results.push(message);
+  });
+  return results;
+};
+
 // The public interface starts here
 var Twitter = {
   /**
@@ -340,7 +363,7 @@ var Twitter = {
    *        The text of the message to send.
    */
   sendDirectMessage: function(username, password, recipient, text) {
-    var url = "http://twitter.com/direct_messages/new.json?user=" + recipient + "&text=" + encodeURIComponent(text);
+    var url = TWITTER + "/direct_messages/new.json?user=" + recipient + "&text=" + encodeURIComponent(text);
     LOG("Requesting " + url);
     var request = Cc["@mozilla.org/xmlextras/xmlhttprequest;1"].
                   createInstance(Ci.nsIXMLHttpRequest);
@@ -366,7 +389,7 @@ var Twitter = {
    *        The text of the status message.
    */
   setStatus: function(username, password, status) {
-    var url = "http://twitter.com/statuses/update.json?status=" + encodeURIComponent(status);
+    var url = TWITTER + "/statuses/update.json?status=" + encodeURIComponent(status);
     LOG("Requesting " + url);
     var request = Cc["@mozilla.org/xmlextras/xmlhttprequest;1"].
                   createInstance(Ci.nsIXMLHttpRequest);
@@ -397,7 +420,7 @@ var Twitter = {
    *        Retrieve all messages with an id greater than this. May be null.
    */
   fetchSentDirectMessages: function(username, password, callback, since) {
-    var url = "http://twitter.com/direct_messages.json";
+    var url = TWITTER + "/direct_messages.json";
     if (since)
       url += "?since_id=" + since;
 
@@ -420,11 +443,72 @@ var Twitter = {
    *        Retrieve all messages with an id greater than this. May be null.
    */
   fetchReceivedDirectMessages: function(username, password, callback, since) {
-    var url = "http://twitter.com/direct_messages/sent.json";
+    var url = TWITTER + "/direct_messages/sent.json";
     if (since)
       url += "?since_id=" + since;
 
     var parser = new DirectMessageParser(callback);
+    parser.startRequest(username, password, url);
+  },
+
+  /**
+   * Retrieves a list of users who are following a user.
+   * @param username
+   *        The Twitter username to get the followers for.
+   * @param password
+   *        The password of the user.
+   * @param callback
+   *        A callback to call when the request finishes. It should expect two
+   *        arguments. The first is an array of the twIPerson items retrieved.
+   *        The second is any error that occured during the request. Only
+   *        one of the arguments will be non-null.
+   */
+  fetchFollowers: function(username, password, callback) {
+    var url = TWITTER + "/statuses/followers.json";
+
+    var parser = new PersonParser(callback);
+    parser.startRequest(username, password, url);
+  },
+
+  /**
+   * Retrieves a list of a user's friends.
+   * @param username
+   *        The Twitter username to get the friends for.
+   * @param password
+   *        The password of the user.
+   * @param callback
+   *        A callback to call when the request finishes. It should expect two
+   *        arguments. The first is an array of the twIPerson items retrieved.
+   *        The second is any error that occured during the request. Only
+   *        one of the arguments will be non-null.
+   */
+  fetchFriends: function(username, password, callback) {
+    var url = TWITTER + "/statuses/friends.json";
+
+    var parser = new PersonParser(callback);
+    parser.startRequest(username, password, url);
+  },
+
+  /**
+   * Retrieves replies to the user.
+   * @param username
+   *        The Twitter username to get the messages for.
+   * @param password
+   *        The password of the user.
+   * @param callback
+   *        A callback to call when the request finishes. It should expect two
+   *        arguments. The first is an array of the twIMessage items retrieved.
+   *        The second is any error that occured during the request. Only
+   *        one of the arguments will be non-null.
+   * @param since
+   *        Retrieve all messages with an id greater than this. May be null.
+   */
+  fetchReplies: function(username, password, callback, since) {
+    var url = TWITTER + "/statuses/replies.json";
+    if (since)
+      url += "?since_id=" + since;
+
+    var parser = new TimelineParser(callback);
     parser.startRequest(username, password, url);
   },
 
@@ -441,11 +525,16 @@ var Twitter = {
    *        one of the arguments will be non-null.
    * @param since
    *        Retrieve all messages with an id greater than this. May be null.
+   * @param count
+   *        The number of messages to retrieve. May be null. Cannot be used
+   *        in conjunction with since.
    */
-  fetchUserTimeline: function(username, password, callback, since) {
-    var url = "http://twitter.com/statuses/user_timeline.json";
+  fetchUserTimeline: function(username, password, callback, since, count) {
+    var url = TWITTER + "/statuses/user_timeline.json";
     if (since)
       url += "?since_id=" + since;
+    else if (count)
+      url += "?count=" + count;
 
     var parser = new TimelineParser(callback);
     parser.startRequest(username, password, url);
@@ -464,11 +553,16 @@ var Twitter = {
    *        one of the arguments will be non-null.
    * @param since
    *        Retrieve all messages with an id greater than this. May be null.
+   * @param count
+   *        The number of messages to retrieve. May be null. Cannot be used
+   *        in conjunction with since.
    */
-  fetchFriendsTimeline: function(username, password, callback, since) {
-    var url = "http://twitter.com/statuses/friends_timeline.json";
+  fetchFriendsTimeline: function(username, password, callback, since, count) {
+    var url = TWITTER + "/statuses/friends_timeline.json";
     if (since)
       url += "?since_id=" + since;
+    else if (count)
+      url += "?count=" + count;
 
     var parser = new TimelineParser(callback);
     parser.startRequest(username, password, url);
