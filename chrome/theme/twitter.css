@@ -35,6 +35,10 @@
   border-bottom: 1px solid #a5a5a5;
 }
 
+.status-item[selected="true"] {
+  background-color: transparent;
+}
+
 /* User posted statuses */
 .status-item[type="0"][author_type="0"],
 .status-item[type="1"][author_type="0"] {
