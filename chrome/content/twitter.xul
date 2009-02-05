@@ -65,11 +65,11 @@
       <toolbarbutton label="&filter-button.label;" tooltiptext="&filter-button.tooltip;"
                      id="filter-button" type="menu">
         <panel tooltiptext="">
+          <checkbox id="own-checkbox" label="&own-checkbox.label;"
+                    oncommand="updateFilter()"/>
           <checkbox id="direct-checkbox" label="&direct-checkbox.label;"
                     oncommand="updateFilter()"/>
           <checkbox id="reply-checkbox" label="&reply-checkbox.label;"
-                    oncommand="updateFilter()"/>
-          <checkbox id="own-checkbox" label="&own-checkbox.label;"
                     oncommand="updateFilter()"/>
           <checkbox id="status-checkbox" label="&status-checkbox.label;"
                     oncommand="updateFilter()"/>
