@@ -1,17 +1,15 @@
 #main-toolbar toolbarbutton {
-  width: 31px;
-  height: 23px;
-  background-image: url(chrome://twitter/skin/mac/button.png);
-  border: 0px none;
-  padding: 3px 7px 4px 8px;
+  -moz-border-image: url(chrome://twitter/skin/mac/button.png) 2 7 2 7 stretch;
+  border-width: 2px 7px 2px 7px;
+  padding: 1px 0px 2px 0px;
 }
 
 #main-toolbar toolbarbutton:active {
-  background-image: url(chrome://twitter/skin/mac/pressed.png);
+  -moz-border-image: url(chrome://twitter/skin/mac/pressed.png) 2 7 2 7 stretch;
 }
 
 window:not([active="true"]) #main-toolbar toolbarbutton {
-  background-image: url(chrome://twitter/skin/mac/inactive.png);
+  -moz-border-image: url(chrome://twitter/skin/mac/inactive.png) 2 7 2 7 stretch;
 }
 
 #main-toolbar .toolbarbutton-icon {
