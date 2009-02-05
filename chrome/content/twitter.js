@@ -178,11 +178,15 @@ function updateFilter() {
   document.getElementById("status-list").builder.rebuild();
 }
 
+function getStatusItem(node) {
+  while (node && node.className != "status-item")
+    node = node.parentNode;
+  return node;
+}
+
 // Called to fill out the tooltip for a status item
 function populateTooltip() {
-  var item = document.tooltipNode;
-  while (item && item.className != "status-item")
-    item = item.parentNode;
+  var item = getStatusItem(document.tooltipNode);
   if (!item)
     return;
 
@@ -195,6 +199,15 @@ function populateTooltip() {
   document.getElementById("date-label").value = (new Date(item.date)).toLocaleString();
 }
 
+// Called to fill out the context menu for a status item
+function populateContextMenu() {
+  var item = getStatusItem(document.popupNode);
+  if (!item)
+    return;
+
+  document.getElementById("home-menu").hidden = !item.hasAttribute("author_homeURL");
+}
+
 // Called to refresh the status list
 function refresh() {
   var service = Cc["@oxymoronical.com/twitterservice;1"].
@@ -202,14 +215,21 @@ function refresh() {
   service.refresh();
 }
 
-// Called by a click on a reply button in the list
-function replyTo(item) {
-  // For now just replace the existing text with a new message
+// Called to send a direct message to a user
+function directMessage(username) {
   var messageBox = document.getElementById("message-textbox");
-  if (item.type == 2)
-    messageBox.value = "d " + item.getAttribute("author_username") + " ";
-  else
-    messageBox.value += "@" + item.getAttribute("author_username") + " ";
+  messageBox.value = "d " + username + " ";
+
+  messageBox.selectionStart = messageBox.value.length;
+  messageBox.selectionEnd = messageBox.value.length;
+  messageBox.focus();
+  afterKeyPressed();
+}
+
+// Called to publicly reply to a user
+function replyTo(username) {
+  var messageBox = document.getElementById("message-textbox");
+  messageBox.value += "@" + username + " ";
 
   messageBox.selectionStart = messageBox.value.length;
   messageBox.selectionEnd = messageBox.value.length;

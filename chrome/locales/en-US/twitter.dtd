@@ -14,8 +14,11 @@
 <!ENTITY status-checkbox.label         "Other statuses">
 <!ENTITY limit-label.label             "Items to display:">
 
+<!ENTITY reply-menu.label              "Reply to author">
+<!ENTITY direct-menu.label             "Send direct message to author">
+<!ENTITY home-menu.label               "Open author's webpage">
+<!ENTITY twitter-menu.label            "Open author's twitter page">
+
 <!ENTITY send-button.label             "Send">
 <!ENTITY reply-button.label            "Reply">
 <!ENTITY reply-button.tooltip          "Reply to message">
-<!ENTITY home-button.label             "Home">
-<!ENTITY home-button.tooltip           "Open author's webpage">

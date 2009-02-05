@@ -62,17 +62,16 @@
         </xul:stack>
       </xul:vbox>
       <xul:vbox flex="1">
-        <xul:label class="title-label" xbl:inherits="value=title"/>
+        <xul:hbox align="end">
+          <xul:label class="title-label" xbl:inherits="value=title"/>
+          <xul:spacer flex="1"/>
+          <xul:button class="reply-button plain" onclick="document.getBindingParent(this).replyToStatus()"
+                      label="&reply-button.label;" tooltiptext="&reply-button.tooltip;"/>
+        </xul:hbox>
         <xul:vbox class="status-box">
           <xbl:children/>
         </xul:vbox>
         <xul:label class="age-label" xbl:inherits="value=age"/>
-      </xul:vbox>
-      <xul:vbox class="right-box">
-        <xul:button class="reply-button plain" onclick="replyTo(this.parentNode.parentNode)"
-                    label="&reply-button.label;" tooltiptext="&reply-button.tooltip;"/>
-        <xul:button class="home-button plain" onclick="openURL(this.parentNode.parentNode.getAttribute('author_homeURL'))"
-                    label="&home-button.label;" tooltiptext="&home-button.tooltip;"/>
       </xul:vbox>
     </content>
     <implementation>
@@ -138,6 +137,9 @@
       ]]>
       </constructor>
 
+      <property name="author" readonly="true"
+                onget="return this.getAttribute('author_username');"/>
+
       <property name="type" readonly="true"
                 onget="return this.getAttribute('type');"/>
 
@@ -149,6 +151,12 @@
 
       <property name="date" readonly="true"
                 onget="return this.getAttribute('date') * 1000;"/>
+
+      <method name="replyToStatus">
+        <body>
+          replyTo(this.author);
+        </body>
+      </method>
     </implementation>
   </binding>
 
@@ -156,6 +164,13 @@
   </binding>
 
   <binding id="direct" extends="#status">
+    <implementation>
+      <method name="replyToStatus">
+        <body>
+          directMessage(this.author);
+        </body>
+      </method>
+    </implementation>
   </binding>
 
   <binding id="toolbarbutton-menu" display="xul:menu" 

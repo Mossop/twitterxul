@@ -99,8 +99,21 @@
     <label id="date-label"/>
   </tooltip>
 
+  <menupopup id="status-menupopup" onpopupshowing="populateContextMenu()">
+    <menuitem id="reply-menu" label="&reply-menu.label;"
+              oncommand="replyTo(getStatusItem(document.popupNode).author)"/>
+    <menuitem id="direct-menu" label="&direct-menu.label;"
+              oncommand="directMessage(getStatusItem(document.popupNode).author)"/>
+    <menuseparator/>
+    <menuitem id="home-menu" label="&home-menu.label;"
+              oncommand="openURL(getStatusItem(document.popupNode).getAttribute('author_homeURL'))"/>
+    <menuitem id="twitter-menu" label="&twitter-menu.label;"
+              oncommand="openURL('http://twitter.com/' + getStatusItem(document.popupNode).author)"/>
+  </menupopup>
+
   <richlistbox datasources="rdf:null" ref="*" querytype="storage"
-               id="status-list" flex="1" disabled="true">
+               id="status-list" flex="1" disabled="true"
+               tooltip="status-tooltip" context="status-menupopup">
     <template>
       <query id="status-query"/>
       <action>
@@ -113,7 +126,7 @@
                       target_name="?target_name" target_location="?target_location"
                       target_description="?target_description" target_type="?target_type"
                       target_imageURL="?target_imageURL" target_homeURL="?target_homeURL"
-                      class="status-item" tooltip="status-tooltip"/>
+                      class="status-item"/>
       </action>
     </template>
   </richlistbox>
