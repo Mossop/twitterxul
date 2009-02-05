@@ -100,9 +100,9 @@
         text = this.text.replace(">", "&gt;");
 
         // Linkify @username and things that look like web links
-        var urlreg = new RegExp("(^|[\\.,\\(\\s])((?:http|https|ftp):\\/\\/\\S+)([,\\.\\)]?)");
-        var userreg = new RegExp("(^|[\\(\\s])@(\\S+)([,\\.\\)]?)");
-        text = text.replace(urlreg, "$1<a href='$2'>$2</a>$3");
+        var urlreg = new RegExp("((?:http|https|ftp):\\/\\/[^\\s\\)\\]]+)(\\.?)", "g");
+        var userreg = new RegExp("(^|[\\(\\s])@(\\S+)([,\\.\\)]?)", "g");
+        text = text.replace(urlreg, "<a href='$1'>$1</a>$2");
         text = text.replace(userreg, "$1<a href='http://twitter.com/$2'>@$2</a>$3");
 
         var div = document.createElementNS("http://www.w3.org/1999/xhtml", "div");
