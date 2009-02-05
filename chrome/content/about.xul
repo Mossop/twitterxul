@@ -49,6 +49,6 @@
         style="&about-window.style;" title="&about-window.title;">
   <vbox align="center" pack="start">
     <image src="chrome://branding/content/icon64.png"/>
-    <label value="&brandShortName;"/>
+    <label value="&appNameVersion;"/>
   </vbox>
 </dialog>

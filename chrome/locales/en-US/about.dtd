@@ -1,2 +1,4 @@
 <!ENTITY about-window.title            "About &brandShortName;">
 <!ENTITY about-window.style            "width: 20em; height: 20em;">
+
+<!ENTITY appNameVersion                "&brandShortName; &appVersion;">

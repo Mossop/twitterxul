@@ -41,6 +41,10 @@ VPATH   = @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
-DEFINES += -DAB_CD=$(MOZ_UI_LOCALE) -DAPP_NAME=$(MOZ_APP_DISPLAYNAME)
+DEFINES += \
+  -DAB_CD=$(MOZ_UI_LOCALE) \
+  -DAPP_NAME=$(MOZ_APP_DISPLAYNAME) \
+  -DAPP_VERSION=$(MOZ_APP_VERSION) \
+  $(NULL)
 
 include $(topsrcdir)/config/rules.mk
