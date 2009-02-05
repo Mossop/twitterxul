@@ -58,6 +58,8 @@
                   label="&inspector-menu.label;" accesskey="&inspector-menu.accesskey;"/>
         <menuitem id="menu_preferences" oncommand="TwitterMenu.openOptions()" class="menuitem-iconic"
                   label="&preferences-menu.label;" accesskey="&preferences-menu.accesskey;"/>
+        <menuitem id="menu_FileQuitItem" oncommand="TwitterMenu.quit()" class="menuitem-iconic"
+                  label="&quit-menu.label;" accesskey="&quit-menu.accesskey;"/>
       </menupopup>
     </menu>
     <menu id="help-menu" label="&help-menu.label;" accesskey="&help-menu.accesskey;">

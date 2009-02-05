@@ -11,6 +11,8 @@
 <!ENTITY options-menu.accesskey        "O">
 <!ENTITY preferences-menu.label        "Preferences…">
 <!ENTITY preferences-menu.accesskey    "P">
+<!ENTITY quit-menu.label               "Quit &brandShortName;">
+<!ENTITY quit-menu.accesskey           "Q">
 
 
 <!ENTITY help-menu.label               "Help">

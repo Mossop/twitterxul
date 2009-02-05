@@ -60,6 +60,13 @@ init: function() {
   }
 },
 
+quit: function() {
+  var appStartup = Components.classes["@mozilla.org/toolkit/app-startup;1"]
+                             .getService(Components.interfaces.nsIAppStartup);
+  appStartup.exitLastWindowClosingSurvivalArea();
+  appStartup.quit(Components.interfaces.nsIAppStartup.eAttemptQuit);
+},
+
 // Updates the check for updates menu item based on the current update state
 buildHelpMenu: function()
 {
