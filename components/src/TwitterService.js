@@ -375,7 +375,7 @@ TwitterService.prototype = {
     Twitter.fetchReceivedDirectMessages(this.user, this.pass, callback, receivedSince);
     Twitter.fetchSentDirectMessages(this.user, this.pass, callback, sentSince);
     Twitter.fetchReplies(this.user, this.pass, callback, statusSince);
-    this.opCount += 3;
+    this.opCount += 4;
   },
 
   addUpdateListener: function(listener) {
