@@ -374,6 +374,7 @@ TwitterService.prototype = {
       Twitter.fetchFriendsTimeline(this.user, this.pass, callback, null, 200);
     Twitter.fetchReceivedDirectMessages(this.user, this.pass, callback, receivedSince);
     Twitter.fetchSentDirectMessages(this.user, this.pass, callback, sentSince);
+    Twitter.fetchReplies(this.user, this.pass, callback, statusSince);
     this.opCount += 3;
   },
 
