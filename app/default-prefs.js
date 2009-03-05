@@ -10,9 +10,9 @@ pref("app.update.enabled", true);
 pref("app.update.auto", true);
 // Prompt if installed extensions are incompatible with the update
 pref("app.update.mode", 1);
-pref("app.update.url", "https://www.oxymoronical.com/aus/3/%PRODUCT%/%VERSION%/%BUILD_ID%/%BUILD_TARGET%/%LOCALE%/%CHANNEL%/%OS_VERSION%/%DISTRIBUTION%/%DISTRIBUTION_VERSION%/update.xml");
-pref("app.update.url.manual", "http://www.oxymoronical.com/%PRODUCT%");
-pref("app.update.url.details", "http://www.oxymoronical.com/%PRODUCT%");
+pref("app.update.url", "https://www.fractalbrew.com/aus/3/%PRODUCT%/%VERSION%/%BUILD_ID%/%BUILD_TARGET%/%LOCALE%/%CHANNEL%/%OS_VERSION%/%DISTRIBUTION%/%DISTRIBUTION_VERSION%/update.xml");
+pref("app.update.url.manual", "http://www.fractalbrew.com/%PRODUCT%");
+pref("app.update.url.details", "http://www.fractalbrew.com/%PRODUCT%");
 // Check once a day
 pref("app.update.interval", 86400);
 // Time before prompting to download (i.e. installed extensions are incompatible with the new version)

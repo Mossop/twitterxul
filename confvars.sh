@@ -34,8 +34,8 @@
 #
 # ***** END LICENSE BLOCK *****
 
-MOZ_APP_NAME=canary
-MOZ_APP_DISPLAYNAME=Canary
+MOZ_APP_NAME=mockingbird
+MOZ_APP_DISPLAYNAME=Mockingbird
 MOZ_APP_VERSION=1.0pre0
 
 MOZ_XUL_APP=1

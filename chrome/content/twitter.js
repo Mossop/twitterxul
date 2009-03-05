@@ -94,7 +94,7 @@ var UpdateListener = {
 
 // Called during window open
 function onStartup() {
-  var service = Cc["@oxymoronical.com/twitterservice;1"].
+  var service = Cc["@fractalbrew.com/twitterxul/service;1"].
                 getService(Ci.twITwitterService);
   document.documentElement.setAttribute("busy", service.busy ? "true" : "false");
   document.getElementById("refresh-button").disabled = service.busy;
@@ -129,7 +129,7 @@ function onStartup() {
 
 // Called during window close
 function onShutdown() {
-  var service = Cc["@oxymoronical.com/twitterservice;1"].
+  var service = Cc["@fractalbrew.com/twitterxul/service;1"].
                 getService(Ci.twITwitterService);
   service.removeUpdateListener(UpdateListener);
 }
@@ -210,7 +210,7 @@ function populateContextMenu() {
 
 // Called to refresh the status list
 function refresh() {
-  var service = Cc["@oxymoronical.com/twitterservice;1"].
+  var service = Cc["@fractalbrew.com/twitterxul/service;1"].
                 getService(Ci.twITwitterService);
   service.refresh();
 }
@@ -239,7 +239,7 @@ function replyTo(username) {
 
 // Called to send the current contents of the message to Twitter
 function sendMessage() {
-  var service = Cc["@oxymoronical.com/twitterservice;1"].
+  var service = Cc["@fractalbrew.com/twitterxul/service;1"].
                 getService(Ci.twITwitterService);
   var message = document.getElementById("message-textbox").value;
 

@@ -45,12 +45,12 @@ tier_app_dirs += \
   $(NULL)
 
 installer:
-	@echo "Canary doesn't have an installer yet."
+	@echo "Mockingbird doesn't have an installer yet."
 	@exit 1
 
 package:
 	@$(MAKE) -C twitter/installer
 
 install::
-	@echo "Canary can't be installed directly."
+	@echo "Mockingbird can't be installed directly."
 	@exit 1

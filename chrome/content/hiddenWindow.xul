@@ -50,7 +50,7 @@ var UpdateListener = {
   },
 
   onNewItemsAdded: function(items, count) {
-    var service = Cc["@oxymoronical.com/twitterservice;1"].
+    var service = Cc["@fractalbrew.com/twitterxul/service;1"].
                   getService(Ci.twITwitterService);
     var alerts = Cc["@mozilla.org/alerts-service;1"].
                  getService(Ci.nsIAlertsService);
@@ -87,13 +87,13 @@ var UpdateListener = {
 };
 
 function onStartup() {
-  var service = Cc["@oxymoronical.com/twitterservice;1"].
+  var service = Cc["@fractalbrew.com/twitterxul/service;1"].
                 getService(Ci.twITwitterService);
   service.addUpdateListener(UpdateListener);
 }
 
 function onShutdown() {
-  var service = Cc["@oxymoronical.com/twitterservice;1"].
+  var service = Cc["@fractalbrew.com/twitterxul/service;1"].
                 getService(Ci.twITwitterService);
   service.removeUpdateListener(UpdateListener);
 }

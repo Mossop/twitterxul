@@ -7,11 +7,11 @@
 	<key>CFBundleExecutable</key>
 	<string>%APP_BINARY%</string>
 	<key>CFBundleGetInfoString</key>
-	<string>%APP_NAME% %APP_VERSION%, © 2009 Oxymoronical</string>
+	<string>%APP_NAME% %APP_VERSION%, © 2009 Fractal Brew Labs</string>
 	<key>CFBundleIconFile</key>
 	<string>twitterxul</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.oxymoronical.twitterxul</string>
+	<string>com.fractalbrew.twitterxul</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>

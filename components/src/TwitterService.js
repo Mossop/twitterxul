@@ -456,7 +456,7 @@ TwitterService.prototype = {
   },
 
   classDescription: "TwitterXUL Background Service",
-  contractID: "@oxymoronical.com/twitterservice;1",
+  contractID: "@fractalbrew.com/twitterxul/service;1",
   classID: Components.ID("{08c3f4a6-60b0-41f7-a889-61ad916d7c67}"),
   _xpcom_categories: [{category: "profile-after-change"}],
   QueryInterface: XPCOMUtils.generateQI([Ci.twITwitterService,

@@ -1,5 +1,5 @@
 #filter substitution
 <!ENTITY  brandShortName        "@APP_NAME@">
 <!ENTITY  brandFullName         "@APP_NAME@">
-<!ENTITY  vendorShortName       "Oxymoronical">
+<!ENTITY  vendorShortName       "Fractal Brew Labs">
 <!ENTITY  appVersion            "@APP_VERSION@">

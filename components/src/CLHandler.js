@@ -84,7 +84,7 @@ CommandLineHandler.prototype = {
   helpInfo: "",
 
   classDescription: "TwitterXUL Command Line Handler",
-  contractID: "@oxymoronical.com/taskhandler;1",
+  contractID: "@fractalbrew.com/twitterxul/commandline;1",
   classID: Components.ID("{a18d7b0a-540e-466d-b5a4-88bebcb5594f}"),
   _xpcom_categories: [{
     category: "command-line-handler",
