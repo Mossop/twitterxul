@@ -131,7 +131,7 @@
     </template>
   </richlistbox>
   <statusbar>
-    <textbox id="message-textbox" flex="1" multiline="true"
+    <textbox id="message-textbox" flex="1" multiline="true" spellcheck="true"
              oninput="afterKeyPressed()" onkeypress="return onKeyPressed(event)"/>
     <vbox align="center">
       <spacer flex="1"/>
