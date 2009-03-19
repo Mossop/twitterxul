@@ -95,7 +95,9 @@
         }
 
         // Escape out any tags to prevent remote exploits
-        var text = this.text.replace("&", "&amp;");
+        var text = this.text.replace("&lt;", "<");
+        text = text.replace("&gt;", ">");
+        text = text.replace("&", "&amp;");
         text = text.replace("<", "&lt;");
         text = text.replace(">", "&gt;");
 
