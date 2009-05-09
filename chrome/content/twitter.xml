@@ -101,7 +101,7 @@
 
         // Linkify @username and things that look like web links
         var urlreg = new RegExp("((?:http|https|ftp):\\/\\/[^\\s\\)\\]]+)(\\.?)", "g");
-        var userreg = new RegExp("(^|[\\(\\s])@(\\S+)([,\\.\\)]?)", "g");
+        var userreg = new RegExp("(^|[\\(\\s])@(\\w+)([,\\.\\)]?)", "g");
         text = text.replace(urlreg, "<a href='$1'>$1</a>$2");
         text = text.replace(userreg, "$1<a href='http://twitter.com/$2'>@$2</a>$3");
 
