@@ -9,3 +9,7 @@
 .status-item[type="2"] {
   -moz-binding: url(chrome://twitter/content/twitter.xml#direct);
 }
+
+.status-div {
+  -moz-user-select: text;
+}
