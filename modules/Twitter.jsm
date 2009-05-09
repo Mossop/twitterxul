@@ -129,7 +129,9 @@ Authenticator.prototype = {
 };
 
 // A twIPerson implementation
-function Person() {
+function Person(item) {
+  if (item)
+    this._parse(item);
 }
 
 Person.prototype = {
@@ -155,7 +157,9 @@ Person.prototype = {
 }
 
 // A twIMessage implementation
-function Status() {
+function Status(item) {
+  if (item)
+    this._parse(item);
 }
 
 Status.prototype = {
@@ -174,24 +178,20 @@ Status.prototype = {
     this.created = Date.parse(item.created_at);
     this.text = unescapeText(item.text);
     this.source = item.source;
-    if ("user" in item) {
-      this.author = new Person();
-      this.author._parse(item.user);
-    }
-    else if ("sender" in item) {
-      this.author = new Person();
-      this.author._parse(item.sender);
-    }
-    else {
+    if ("user" in item)
+      this.author = new Person(item.user);
+    else if ("sender" in item)
+      this.author = new Person(item.sender);
+    else
       LOG("No author found for item " + item.toSource());
-    }
   },
 
   QueryInterface: XPCOMUtils.generateQI([Ci.twIMessage])
 };
 
 // A twIReply implementation
-function Reply() {
+function Reply(item) {
+  Status.call(this, item);
 }
 
 Reply.prototype = new Status();
@@ -209,7 +209,8 @@ Reply.prototype.QueryInterface = XPCOMUtils.generateQI([Ci.twIReply,
                                                         Ci.twIMessage]);
 
 // A twIDirectMessage implementation
-function DirectMessage() {
+function DirectMessage(item) {
+  Status.call(this, item);
 }
 
 DirectMessage.prototype = new Status();
@@ -219,8 +220,7 @@ DirectMessage.prototype.toString = function() {
 };
 DirectMessage.prototype._parse = function(item) {
   Status.prototype._parse.call(this, item);
-  this.recipient = new Person();
-  this.recipient._parse(item.recipient);
+  this.recipient = new Person(item.recipient);
 };
 DirectMessage.prototype.QueryInterface = XPCOMUtils.generateQI([Ci.twIDirectMessage,
                                                                 Ci.twIMessage]);
@@ -308,10 +308,9 @@ TimelineParser.prototype.parseData = function(items) {
   items.forEach(function(item) {
     var message = null;
     if (item.in_reply_to_user_id)
-      message = new Reply();
+      message = new Reply(item);
     else
-      message = new Status();
-    message._parse(item);
+      message = new Status(item);
     results.push(message);
   });
   return results;
@@ -331,8 +330,7 @@ DirectMessageParser.prototype.parseData = function(items) {
 
   var results = [];
   items.forEach(function(item) {
-    var message = new DirectMessage();
-    message._parse(item);
+    var message = new DirectMessage(item);
     results.push(message);
   });
   return results;
@@ -352,8 +350,7 @@ PersonParser.prototype.parseData = function(items) {
 
   var results = [];
   items.forEach(function(item) {
-    var person = new Person();
-    person._parse(item);
+    var person = new Person(item);
     results.push(message);
   });
   return results;
