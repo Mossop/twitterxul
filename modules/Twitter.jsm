@@ -60,6 +60,16 @@ function safecall(callback) {
   }
 }
 
+function unescapeText(text) {
+  text = text.replace("&lt;", "<");
+  return text.replace("&gt;", ">");
+}
+
+function escapeText(text) {
+  text = text.replace("<", "&lt;");
+  return text.replace(">", "&gt;");
+}
+
 // The Authenticator deals with responding to authentication requests from the
 // Twitter request. It should be set as the notificationCallbacks on the channel.
 function Authenticator(username, password) {
@@ -162,7 +172,7 @@ Status.prototype = {
   _parse: function(item) {
     this.id = item.id;
     this.created = Date.parse(item.created_at);
-    this.text = item.text;
+    this.text = unescapeText(item.text);
     this.source = item.source;
     if ("user" in item) {
       this.author = new Person();
