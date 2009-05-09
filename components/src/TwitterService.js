@@ -73,6 +73,8 @@ TwitterService.prototype = {
   timer: null,
   // The current number of Twitter requests waiting to be heard back from
   opCount: null,
+  // The status of the currently running updates
+  updateStatus: null,
   // An array of items added during the current refresh
   addedItems: null,
   // The registered update listeners
@@ -258,10 +260,9 @@ TwitterService.prototype = {
   },
 
   // This callback is called for every failed Twitter request we make
-  errorCallback: function(request, statusCode, statusText) {
+  errorCallback: function(statusCode, statusText) {
     this.opCount--;
-    LOG("Error getting items: " + error);
-    // TODO propogate this to the listeners in some way
+    this.updateStatus++;
 
     this.maybeCallListeners();
   },
@@ -277,7 +278,7 @@ TwitterService.prototype = {
       });
       this.callListeners("onNewItemsAdded", this.addedItems, this.addedItems.length);
     }
-    this.callListeners("onUpdateEnded");
+    this.callListeners("onUpdateEnded", this.updateStatus);
     this.addedItems = null;
     this.timer.init(this, this.refreshRate * 1000, Ci.nsITimer.TYPE_ONE_SHOT);
     this.prefs.setIntPref("lastUpdate", Date.now() / 1000);
@@ -376,14 +377,15 @@ TwitterService.prototype = {
       stmt.reset();
     }
 
+    this.updateStatus = 0;
     var account = Twitter.getTwitterAccount(this.user, this.pass);
     this.addedItems = [];
     var self = this;
     var successCallback = function(items) {
       self.successCallback(items);
     }
-    var errorCallback = function(items) {
-      self.errorCallback(items);
+    var errorCallback = function(statusCode, statusText) {
+      self.errorCallback(statusCode, statusText);
     }
     if (statusSince)
       account.fetchFriendsTimeline(successCallback, errorCallback, statusSince);

@@ -354,8 +354,8 @@ Parser.prototype = {
 };
 
 // A Parser for regular status updates
-function TimelineParser(callback) {
-  Parser.call(this, callback);
+function TimelineParser(successCallback, errorCallback) {
+  Parser.call(this, successCallback, errorCallback);
 }
 
 TimelineParser.prototype = new Parser();
@@ -378,8 +378,8 @@ TimelineParser.prototype.parseData = function(items) {
 };
 
 // A Parser for direct messages
-function DirectMessageParser(callback) {
-  Parser.call(this, callback);
+function DirectMessageParser(successCallback, errorCallback) {
+  Parser.call(this, successCallback, errorCallback);
 }
 
 DirectMessageParser.prototype = new Parser();
@@ -398,8 +398,8 @@ DirectMessageParser.prototype.parseData = function(items) {
 };
 
 // A Parser for direct messages
-function PersonParser(callback) {
-  Parser.call(this, callback);
+function PersonParser(successCallback, errorCallback) {
+  Parser.call(this, successCallback, errorCallback);
 }
 
 PersonParser.prototype = new Parser();
@@ -446,8 +446,7 @@ TwitterAccount.prototype = {
    *        A callback to call when the request finishes.
    * @param errorCallback
    *        A callback that will be called if the request fails for some reason.
-   *        It will be passed an xmlhttprequest object, a status code and a
-   *        status message.
+   *        It will be passed a status code and a status message.
    * @param recipient
    *        The username of the user to send to.
    * @param text
@@ -460,7 +459,7 @@ TwitterAccount.prototype = {
         safecall(successCallback);
       },
       onError: function(request, statusCode, statusText) {
-        safecall(errorCallback, request, statusCode, statusText);
+        safecall(errorCallback, statusCode, statusText);
       }
     });
   },
@@ -471,8 +470,7 @@ TwitterAccount.prototype = {
    *        A callback to call when the request finishes.
    * @param errorCallback
    *        A callback that will be called if the request fails for some reason.
-   *        It will be passed an xmlhttprequest object, a status code and a
-   *        status message.
+   *        It will be passed a status code and a status message.
    * @param status
    *        The text of the status message.
    */
@@ -483,7 +481,7 @@ TwitterAccount.prototype = {
         safecall(successCallback);
       },
       onError: function(request, statusCode, statusText) {
-        safecall(errorCallback, request, statusCode, statusText);
+        safecall(errorCallback, statusCode, statusText);
       }
     });
   },
@@ -495,8 +493,7 @@ TwitterAccount.prototype = {
    *        array of the twIMessage items retrieved.
    * @param errorCallback
    *        A callback that will be called if the request fails for some reason.
-   *        It will be passed an xmlhttprequest object, a status code and a
-   *        status message.
+   *        It will be passed a status code and a status message.
    * @param since
    *        Retrieve all messages with an id greater than this. May be null.
    */
@@ -516,8 +513,7 @@ TwitterAccount.prototype = {
    *        array of the twIMessage items retrieved.
    * @param errorCallback
    *        A callback that will be called if the request fails for some reason.
-   *        It will be passed an xmlhttprequest object, a status code and a
-   *        status message.
+   *        It will be passed a status code and a status message.
    * @param since
    *        Retrieve all messages with an id greater than this. May be null.
    */
@@ -537,8 +533,7 @@ TwitterAccount.prototype = {
    *        array of the twIPerson followers.
    * @param errorCallback
    *        A callback that will be called if the request fails for some reason.
-   *        It will be passed an xmlhttprequest object, a status code and a
-   *        status message.
+   *        It will be passed a status code and a status message.
    */
   fetchFollowers: function(successCallback, errorCallback) {
     var url = TWITTER + "/statuses/followers.json";
@@ -554,8 +549,7 @@ TwitterAccount.prototype = {
    *        array of the twIPerson friends.
    * @param errorCallback
    *        A callback that will be called if the request fails for some reason.
-   *        It will be passed an xmlhttprequest object, a status code and a
-   *        status message.
+   *        It will be passed a status code and a status message.
    */
   fetchFriends: function(successCallback, errorCallback) {
     var url = TWITTER + "/statuses/friends.json";
@@ -571,8 +565,7 @@ TwitterAccount.prototype = {
    *        array of the twIMessage items retrieved.
    * @param errorCallback
    *        A callback that will be called if the request fails for some reason.
-   *        It will be passed an xmlhttprequest object, a status code and a
-   *        status message.
+   *        It will be passed a status code and a status message.
    * @param since
    *        Retrieve all messages with an id greater than this. May be null.
    */
@@ -592,8 +585,7 @@ TwitterAccount.prototype = {
    *        array of the twIMessage items retrieved.
    * @param errorCallback
    *        A callback that will be called if the request fails for some reason.
-   *        It will be passed an xmlhttprequest object, a status code and a
-   *        status message.
+   *        It will be passed a status code and a status message.
    * @param since
    *        Retrieve all messages with an id greater than this. May be null.
    * @param count
@@ -618,8 +610,7 @@ TwitterAccount.prototype = {
    *        array of the twIMessage items retrieved.
    * @param errorCallback
    *        A callback that will be called if the request fails for some reason.
-   *        It will be passed an xmlhttprequest object, a status code and a
-   *        status message.
+   *        It will be passed a status code and a status message.
    * @param since
    *        Retrieve all messages with an id greater than this. May be null.
    * @param count

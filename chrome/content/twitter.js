@@ -86,7 +86,7 @@ var UpdateListener = {
     document.getElementById("status-list").builder.rebuild();
   },
 
-  onUpdateEnded: function() {
+  onUpdateEnded: function(status) {
     document.documentElement.setAttribute("busy", "false");
     document.getElementById("refresh-button").disabled = false;
   }
@@ -243,7 +243,7 @@ function sendMessage(message) {
                 getService(Ci.twITwitterService);
   var act = Twitter.getTwitterAccount(service.username, service.password);
 
-  var errorCallback = function(request, statusCode, statusText) {
+  var errorCallback = function(statusCode, statusText) {
     var strings = document.getElementById("main-strings");
     var title = strings.getString("sendfailed.title");
     var text = strings.getFormattedString("sendfailed.message", [statusText]);

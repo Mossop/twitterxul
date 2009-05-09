@@ -64,8 +64,11 @@ interface twITwitterUpdateListener : nsISupports
 
   /**
    * Called when the refresh process ends.
+   * @param status
+   *        an indication of any errors during the updates. If this is non-zero
+   *        then at least one of the operations failed.
    */
-  void onUpdateEnded();
+  void onUpdateEnded(in unsigned long status);
 };
 
 /**

@@ -64,7 +64,16 @@ var UpdateListener = {
     }, this);
   },
 
-  onUpdateEnded: function() {
+  onUpdateEnded: function(status) {
+    if (status == 0)
+      return;
+
+    var strings = document.getElementById("main-strings");
+    var alerts = Cc["@mozilla.org/alerts-service;1"].
+                 getService(Ci.nsIAlertsService);
+    alerts.showAlertNotification("chrome://branding/content/icon64.png",
+                                 strings.getString("updateerror.title"),
+                                 strings.getString("updateerror.text"));
   },
 
   observe: function(subject, topic, data) {
@@ -99,4 +108,7 @@ function onShutdown() {
 }
 
 </script>
+
+  <stringbundle id="main-strings" src="chrome://twitter/locale/twitter.properties"/>
+
 </window>
