@@ -9,8 +9,3 @@
 .status-item[type="2"] {
   -moz-binding: url(chrome://twitter/content/twitter.xml#direct);
 }
-
-/* Hack to fix bug 467360 */
-toolbarbutton[type="menu"] {
-  -moz-binding: url(chrome://twitter/content/twitter.xml#toolbarbutton-menu);
-}
