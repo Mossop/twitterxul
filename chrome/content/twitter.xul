@@ -136,7 +136,7 @@
     <vbox align="center">
       <spacer flex="1"/>
       <button id="send-button" disabled="true" label="&send-button.label;"
-              oncommand="sendMessage()"/>
+              oncommand="onSendPressed()"/>
       <spacer flex="1"/>
       <label id="count-label" value="140"/>
       <spacer flex="1"/>

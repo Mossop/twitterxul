@@ -238,22 +238,27 @@ function replyTo(username) {
 }
 
 // Called to send the current contents of the message to Twitter
-function sendMessage() {
+function sendMessage(message) {
   var service = Cc["@fractalbrew.com/twitterxul/service;1"].
                 getService(Ci.twITwitterService);
-  var message = document.getElementById("message-textbox").value;
   var act = Twitter.getTwitterAccount(service.username, service.password);
 
-  var results = gDirectMessage.exec(message);
-  if (results) {
-    act.sendDirectMessage(null, null, results[1], results[2]);
-  }
-  else {
-    act.setStatus(null, null, message);
-  }
+  var errorCallback = function(request, statusCode, statusText) {
+    var strings = document.getElementById("main-strings");
+    var title = strings.getString("sendfailed.title");
+    var text = strings.getFormattedString("sendfailed.message", [statusText]);
 
-  document.getElementById("message-textbox").value = "";
-  afterKeyPressed();
+    var prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"].
+                  getService(Ci.nsIPromptService);
+    if (prompts.confirm(window, title, text))
+      sendMessage(message);
+  };
+
+  var results = gDirectMessage.exec(message);
+  if (results)
+    act.sendDirectMessage(null, errorCallback, results[1], results[2]);
+  else
+    act.setStatus(null, errorCallback, message);
 }
 
 // Update the UI state based on what is in the message box
@@ -263,10 +268,18 @@ function afterKeyPressed(event) {
   document.getElementById("count-label").value = 140 - text.length;
 }
 
+// Called when the send button is clicked
+function onSendPressed() {
+  var textbox = document.getElementById("message-textbox");
+  sendMessage(textbox.value);
+  textbox.value = "";
+  afterKeyPressed();
+}
+
 // Sends the message when return is pressed
 function onKeyPressed(event) {
   if (event.keyCode == Ci.nsIDOMKeyEvent.DOM_VK_RETURN) {
-    sendMessage();
+    onSendPressed();
     return false;
   }
   return true;
