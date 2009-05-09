@@ -324,6 +324,10 @@ TwitterService.prototype = {
   },
 
   refresh: function() {
+    var ioservice = Cc["@mozilla.org/network/io-service;1"].
+                    getService(Ci.nsIIOService);
+    if (ioservice.offline)
+      return;
     if (this.opCount)
       return;
 
