@@ -44,3 +44,6 @@ include $(DEPTH)/config/autoconf.mk
 DEFINES += -DAB_CD=$(MOZ_UI_LOCALE)
 
 include $(topsrcdir)/config/rules.mk
+
+libs::
+	cp $(srcdir)/$(MOZ_UI_LOCALE)/updater.ini $(DIST)/bin

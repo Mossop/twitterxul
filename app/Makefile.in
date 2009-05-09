@@ -106,7 +106,6 @@ libs repackage:: application.ini
 	mkdir -p $(XUL_FRAMEWORK)
 	rsync -a --copy-unsafe-links $(LIBXUL_DIST)/bin/ $(XUL_FRAMEWORK)
 	cd $(XUL_FRAMEWORK) && $(RM) -f $(SDK_STRIP)
-	cp $(srcdir)/../chrome/locales/$(MOZ_UI_LOCALE)/updater.ini $(DIST)/$(APP_NAME).app/Contents/$(APPFILES)
 #	remove version control dirs from packaged app
 	find $(DIST)/$(APP_NAME).app -type d -name "CVS" -prune -exec rm -rf {} \;
 	find $(DIST)/$(APP_NAME).app -type d -name ".svn" -prune -exec rm -rf {} \;
@@ -118,6 +117,5 @@ libs::
 	$(NSINSTALL) -D $(DIST)/bin/xulrunner
 	(cd $(LIBXUL_DIST)/bin && tar $(TAR_CREATE_FLAGS) - .) | (cd $(DIST)/bin/xulrunner && tar -xf -)
 	cd $(DIST)/bin/xulrunner && $(RM) -f $(SDK_STRIP)
-	cp $(srcdir)/../chrome/locales/$(MOZ_UI_LOCALE)/updater.ini $(DIST)/bin
 
 endif #cocoa
