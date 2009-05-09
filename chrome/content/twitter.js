@@ -242,13 +242,14 @@ function sendMessage() {
   var service = Cc["@fractalbrew.com/twitterxul/service;1"].
                 getService(Ci.twITwitterService);
   var message = document.getElementById("message-textbox").value;
+  var act = Twitter.getTwitterAccount(service.username, service.password);
 
   var results = gDirectMessage.exec(message);
   if (results) {
-    Twitter.sendDirectMessage(service.username, service.password, results[1], results[2]);
+    act.sendDirectMessage(null, null, results[1], results[2]);
   }
   else {
-    Twitter.setStatus(service.username, service.password, message);
+    act.setStatus(null, null, message);
   }
 
   document.getElementById("message-textbox").value = "";

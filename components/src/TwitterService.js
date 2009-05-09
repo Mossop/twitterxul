@@ -244,35 +244,43 @@ TwitterService.prototype = {
     stmt.execute();
   },
 
-  // This callback is called for every Twitter request we make
-  twitterCallback: function(items, error) {
+  // This callback is called for every successful Twitter request we make
+  successCallback: function(items) {
     this.opCount--;
-    if (error) {
-      LOG("Error getting items: " + error);
-      // TODO propogate this to the listeners in some way
-    }
-    else {
-      items.forEach(function(item) {
-        if (!this.isMessageInDatabase(item)) {
-          this.addMessageToDatabase(item);
-          this.addedItems.push(item);
-        }
-      }, this);
-    }
-
-    if (this.opCount == 0) {
-      LOG("Retrieved " + this.addedItems.length + " items");
-      if (this.addedItems.length > 0) {
-        this.addedItems.sort(function (a, b) {
-          return a.created - b.created;
-        });
-        this.callListeners("onNewItemsAdded", this.addedItems, this.addedItems.length);
+    items.forEach(function(item) {
+      if (!this.isMessageInDatabase(item)) {
+        this.addMessageToDatabase(item);
+        this.addedItems.push(item);
       }
-      this.callListeners("onUpdateEnded");
-      this.addedItems = null;
-      this.timer.init(this, this.refreshRate * 1000, Ci.nsITimer.TYPE_ONE_SHOT);
-      this.prefs.setIntPref("lastUpdate", Date.now() / 1000);
+    }, this);
+
+    this.maybeCallListeners();
+  },
+
+  // This callback is called for every failed Twitter request we make
+  errorCallback: function(request, statusCode, statusText) {
+    this.opCount--;
+    LOG("Error getting items: " + error);
+    // TODO propogate this to the listeners in some way
+
+    this.maybeCallListeners();
+  },
+
+  maybeCallListeners: function() {
+    if (this.opCount != 0)
+      return;
+
+    LOG("Retrieved " + this.addedItems.length + " items");
+    if (this.addedItems.length > 0) {
+      this.addedItems.sort(function (a, b) {
+        return a.created - b.created;
+      });
+      this.callListeners("onNewItemsAdded", this.addedItems, this.addedItems.length);
     }
+    this.callListeners("onUpdateEnded");
+    this.addedItems = null;
+    this.timer.init(this, this.refreshRate * 1000, Ci.nsITimer.TYPE_ONE_SHOT);
+    this.prefs.setIntPref("lastUpdate", Date.now() / 1000);
   },
 
   // This calls all the registered listeners protecting against any exceptions
@@ -368,18 +376,22 @@ TwitterService.prototype = {
       stmt.reset();
     }
 
+    var account = Twitter.getTwitterAccount(this.user, this.pass);
     this.addedItems = [];
     var self = this;
-    var callback = function(items, error) {
-      self.twitterCallback(items, error);
+    var successCallback = function(items) {
+      self.successCallback(items);
+    }
+    var errorCallback = function(items) {
+      self.errorCallback(items);
     }
     if (statusSince)
-      Twitter.fetchFriendsTimeline(this.user, this.pass, callback, statusSince);
+      account.fetchFriendsTimeline(successCallback, errorCallback, statusSince);
     else
-      Twitter.fetchFriendsTimeline(this.user, this.pass, callback, null, 200);
-    Twitter.fetchReceivedDirectMessages(this.user, this.pass, callback, receivedSince);
-    Twitter.fetchSentDirectMessages(this.user, this.pass, callback, sentSince);
-    Twitter.fetchReplies(this.user, this.pass, callback, statusSince);
+      account.fetchFriendsTimeline(successCallback, errorCallback, null, 200);
+    account.fetchReceivedDirectMessages(successCallback, errorCallback, receivedSince);
+    account.fetchSentDirectMessages(successCallback, errorCallback, sentSince);
+    account.fetchReplies(successCallback, errorCallback, statusSince);
     this.opCount += 4;
   },
 
