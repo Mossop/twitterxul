@@ -118,6 +118,7 @@ TwitterService.prototype = {
     var observerService = Cc["@mozilla.org/observer-service;1"].
                           getService(Ci.nsIObserverService);
     observerService.addObserver(this, "final-ui-startup", false);
+    observerService.addObserver(this, "network:offline-status-changed", false);
     observerService.addObserver(this, "xpcom-shutdown", false);
   },
 
@@ -396,12 +397,22 @@ TwitterService.prototype = {
       this.startup();
       break;
     case "final-ui-startup":
-      this.scheduleRefresh();
+      var ioservice = Cc["@mozilla.org/network/io-service;1"].
+                      getService(Ci.nsIIOService);
+      if (!ioservice.offline)
+        this.scheduleRefresh();
+      break;
+    case "network:offline-status-changed":
+      if (data == "offline")
+        this.timer.cancel();
+      else
+        this.scheduleRefresh();
       break;
     case "xpcom-shutdown":
       var observerService = Cc["@mozilla.org/observer-service;1"].
                             getService(Ci.nsIObserverService);
       observerService.removeObserver(this, "final-ui-startup");
+      observerService.removeObserver(this, "network:offline-status-changed");
       observerService.removeObserver(this, "xpcom-shutdown");
       this.prefs.removeObserver("", this);
       this.prefs = null;
