@@ -43,6 +43,12 @@ const Cr = Components.results;
 Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
 
 const TWITTER = "https://twitter.com";
+const TIMEOUT = 2 * 60 * 1000;
+
+function ERROR(str) {
+  Components.utils.reportError(str);
+  LOG(str);
+}
 
 function LOG(str) {
   dump("Twitter.jsm: " + str + "\n");
@@ -56,7 +62,7 @@ function safecall(callback) {
     callback.apply(null, Array.splice(arguments, 1));
   }
   catch (e) {
-    LOG("Error calling callback " + e);
+    ERROR("Error calling callback " + e);
   }
 }
 
@@ -183,7 +189,7 @@ Status.prototype = {
     else if ("sender" in item)
       this.author = new Person(item.sender);
     else
-      LOG("No author found for item " + item.toSource());
+      ERROR("No author found for item " + item.toSource());
   },
 
   QueryInterface: XPCOMUtils.generateQI([Ci.twIMessage])
@@ -233,17 +239,22 @@ function Parser(callback) {
 
 Parser.prototype = {
   callback: null,
+  request: null,
 
   // Should be implemented by specific implementations
   parseData: function(json) {
-    LOG("Should never get here");
+    ERROR("Should never get here");
   },
 
   // Called when the http request completes
   onLoad: function(event) {
-    var request = event.target;
+    this.timer.cancel();
+    this.timer = null;
+
+    var request = this.request;
+    this.request = null;
     if (request.status != 200) {
-      LOG("Request failed: " + request.statusText);
+      ERROR("Request failed: " + request.statusText);
       safecall(this.callback, null, request.statusText);
       return;
     }
@@ -256,39 +267,56 @@ Parser.prototype = {
           safecall(this.callback, items, null);
         }
         else {
-          LOG("Server returned unparseable data: " + request.responseText);
+          ERROR("Server returned unparseable data: " + request.responseText);
           safecall(this.callback, null, "Unexpected data returned from server.");
         }
       }
       else {
-        LOG("Server returned bad JSON data: " + request.responseText);
+        ERROR("Server returned bad JSON data: " + request.responseText);
         safecall(this.callback, null, "Unexpected data returned from server.");
       }
     }
     catch (e) {
-      LOG("Failed to parse: " + e);
+      ERROR("Failed to parse: " + e);
       safecall(this.callback, null, e.toString());
     }
   },
 
   // Called when the http request fails
   onError: function(event) {
-    LOG("Request failed: " + event.target.statusText);
+    if (this.timer) {
+      this.timer.cancel();
+      this.timer = null;
+    }
+
+    ERROR("Request failed: " + event.target.statusText);
     safecall(this.callback, null, event.target.statusText);
+  },
+
+  notify: function(timer) {
+    this.timer = null;
+    this.request.abort();
+
+    ERROR("Request timed out");
+    safecall(this.callback, null, "Request timed out.");
   },
 
   // Starts a new request.
   // TODO maybe move this to the constructor?
   startRequest: function(username, password, url) {
     LOG("Requesting " + url);
-    var request = Cc["@mozilla.org/xmlextras/xmlhttprequest;1"].
-                  createInstance(Ci.nsIXMLHttpRequest);
-    request.open("GET", url, true);
-    request.channel.notificationCallbacks = new Authenticator(username, password);
+    this.request = Cc["@mozilla.org/xmlextras/xmlhttprequest;1"].
+                   createInstance(Ci.nsIXMLHttpRequest);
+    this.request.open("GET", url, true);
+    this.request.channel.notificationCallbacks = new Authenticator(username, password);
     var self = this;
-    request.onerror = function(event) { self.onError(event) };
-    request.onload = function(event) { self.onLoad(event) };
-    request.send(null);
+    this.request.onerror = function(event) { self.onError(event) };
+    this.request.onload = function(event) { self.onLoad(event) };
+    this.request.send(null);
+
+    this.timer = Cc["@mozilla.org/timer;1"].
+                 createInstance(Ci.nsITimer);
+    this.timer.initWithCallback(this, TIMEOUT, Ci.nsITimer.TYPE_ONE_SHOT);
   }
 };
 
@@ -300,7 +328,7 @@ function TimelineParser(callback) {
 TimelineParser.prototype = new Parser();
 TimelineParser.prototype.parseData = function(items) {
   if (!(items instanceof Array)) {
-    LOG("JSON data wasn't an array");
+    ERROR("JSON data wasn't an array");
     throw "Unexpected data returned from server.";
   }
 
@@ -324,7 +352,7 @@ function DirectMessageParser(callback) {
 DirectMessageParser.prototype = new Parser();
 DirectMessageParser.prototype.parseData = function(items) {
   if (!(items instanceof Array)) {
-    LOG("JSON data wasn't an array");
+    ERROR("JSON data wasn't an array");
     throw "Unexpected data returned from server.";
   }
 
@@ -344,7 +372,7 @@ function PersonParser(callback) {
 PersonParser.prototype = new Parser();
 PersonParser.prototype.parseData = function(items) {
   if (!(items instanceof Array)) {
-    LOG("JSON data wasn't an array");
+    ERROR("JSON data wasn't an array");
     throw "Unexpected data returned from server.";
   }
 
@@ -378,10 +406,10 @@ var Twitter = {
     request.channel.notificationCallbacks = new Authenticator(username, password);
     request.onload = function(event) {
       if (event.target.status != 200)
-        LOG("Request failed: " + event.target.statusText);
+        ERROR("Request failed: " + event.target.statusText);
     };
     request.onerror = function(event) {
-      LOG("Request failed: " + event.target.statusText);
+      ERROR("Request failed: " + event.target.statusText);
     };
     request.send(null);
   },
@@ -404,10 +432,10 @@ var Twitter = {
     request.channel.notificationCallbacks = new Authenticator(username, password);
     request.onload = function(event) {
       if (event.target.status != 200)
-        LOG("Request failed: " + event.target.statusText);
+        ERROR("Request failed: " + event.target.statusText);
     };
     request.onerror = function(event) {
-      LOG("Request failed: " + event.target.statusText);
+      ERROR("Request failed: " + event.target.statusText);
     };
     request.send(null);
   },
