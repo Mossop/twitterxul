@@ -41,6 +41,7 @@
 <window windowtype="Twitter:HiddenWindow" onload="onStartup()" onunload="onShutdown()"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 <script type="application/javascript">
+<![CDATA[
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cr = Components.results;
@@ -55,7 +56,22 @@ var UpdateListener = {
     var alerts = Cc["@mozilla.org/alerts-service;1"].
                  getService(Ci.nsIAlertsService);
 
+    var list = [];
     items.forEach(function(item) {
+      if (item.author.username != service.username)
+        list.push(item);
+    });
+
+    if (list.length > 10) {
+      list = list.slice(-9);
+      var strings = document.getElementById("main-strings");
+      alerts.showAlertNotification("chrome://branding/content/icon64.png",
+                                   strings.getString("hiddenstatuses.title"),
+                                   strings.getString("hiddenstatuses.text"),
+                                   true, null, this);
+    }
+
+    list.forEach(function(item) {
       if (item.author.username != service.username)
         alerts.showAlertNotification(item.author.imageURL,
                                      item.author.name,
@@ -86,11 +102,16 @@ var UpdateListener = {
   
     if (topWindow) {
       topWindow.focus();
-      topWindow.selectItemWithId(data);
+      if (data)
+        topWindow.selectItemWithId(data);
     }
     else {
-      window.openDialog("chrome://twitter/content/", "_blank",
-                        "chrome,resizable,centerscreen,dialog=no", data);
+      if (data)
+        window.openDialog("chrome://twitter/content/", "_blank",
+                          "chrome,resizable,centerscreen,dialog=no", data);
+      else
+        window.openDialog("chrome://twitter/content/", "_blank",
+                          "chrome,resizable,centerscreen,dialog=no");
     }
   }
 };
@@ -106,7 +127,7 @@ function onShutdown() {
                 getService(Ci.twITwitterService);
   service.removeUpdateListener(UpdateListener);
 }
-
+]]>
 </script>
 
   <stringbundle id="main-strings" src="chrome://twitter/locale/twitter.properties"/>
