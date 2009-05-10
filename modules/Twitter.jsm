@@ -166,9 +166,14 @@ TimedRequest.prototype = {
     this.timer = null;
 
     if (this.request.status != 200) {
-      ERROR("Request failed: " + this.request.status + " " + this.request.statusText);
+      var statusText = "Unknown error";
+      try {
+        statusText = this.request.statusText;
+      }
+      catch (e) { }
+      ERROR("Request failed: " + this.request.status + " " + statusText);
       if ("onError" in this.observer)
-        this.observer.onError(this.request, this.request.status, this.request.statusText);
+        this.observer.onError(this.request, this.request.status, statusText);
       return;
     }
     else if ("onLoad" in this.observer) {
@@ -186,9 +191,14 @@ TimedRequest.prototype = {
     this.timer.cancel();
     this.timer = null;
 
-    ERROR("Request failed: " + this.request.status + " " + this.request.statusText);
+    var statusText = "Unknown error";
+    try {
+      statusText = this.request.statusText;
+    }
+    catch (e) { }
+    ERROR("Request failed: " + this.request.status + " " + statusText);
     if ("onError" in this.observer)
-      this.observer.onError(this.request, this.request.status, this.request.statusText);
+      this.observer.onError(this.request, this.request.status, statusText);
     this.request = null;
   },
 
