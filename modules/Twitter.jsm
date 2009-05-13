@@ -70,13 +70,13 @@ function safecall(callback) {
 }
 
 function unescapeText(text) {
-  text = text.replace("&lt;", "<");
-  return text.replace("&gt;", ">");
+  text = text.replace("&lt;", "<", "g");
+  return text.replace("&gt;", ">", "g");
 }
 
 function escapeText(text) {
-  text = text.replace("<", "&lt;");
-  return text.replace(">", "&gt;");
+  text = text.replace("<", "&lt;", "g");
+  return text.replace(">", "&gt;", "g");
 }
 
 // The Authenticator deals with responding to authentication requests from the
