@@ -95,9 +95,9 @@
         }
 
         // Escape out any tags to prevent remote exploits
-        var text = this.text.replace("&", "&amp;", "g");
-        text = text.replace("<", "&lt;", "g");
-        text = text.replace(">", "&gt;", "g");
+        let txtToHTML = Components.classes["@mozilla.org/txttohtmlconv;1"]
+                                  .getService(Components.interfaces.mozITXTToHTMLConv);
+        var text = txtToHTML.scanTXT(this.text, Components.interfaces.mozITXTToHTMLConv.kEntities);
 
         // Linkify @username and things that look like web links
         var urlreg = new RegExp("((?:http|https|ftp):\\/\\/[^\\s\\)\\]]+)(\\.?)", "g");
