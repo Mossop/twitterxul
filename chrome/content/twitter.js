@@ -74,6 +74,8 @@ var gDBFields = "Messages.id AS id," +
 var gDBTables = "Messages JOIN People AS Author ON Messages.author=Author.id " +
                 "LEFT JOIN People AS Target ON Messages.target=Target.id";
 
+var gReplyID = null;
+
 // The update listener updates the throbber and rebuilds the status list if
 // new items have been added.
 var UpdateListener = {
@@ -217,6 +219,7 @@ function refresh() {
 
 // Called to send a direct message to a user
 function directMessage(username) {
+  gReplyID = null;
   var messageBox = document.getElementById("message-textbox");
   messageBox.value = "d " + username + " ";
 
@@ -227,8 +230,10 @@ function directMessage(username) {
 }
 
 // Called to publicly reply to a user
-function replyTo(username) {
+function replyTo(id, username) {
   var messageBox = document.getElementById("message-textbox");
+  if (messageBox.value.length == 0)
+    gReplyID = id;
   messageBox.value += "@" + username + " ";
 
   messageBox.selectionStart = messageBox.value.length;
@@ -258,7 +263,7 @@ function sendMessage(message) {
   if (results)
     act.sendDirectMessage(null, errorCallback, results[1], results[2]);
   else
-    act.setStatus(null, errorCallback, message);
+    act.setStatus(null, errorCallback, message, gReplyID);
 }
 
 // Update the UI state based on what is in the message box
@@ -266,6 +271,8 @@ function afterKeyPressed(event) {
   var text = document.getElementById("message-textbox").value;
   document.getElementById("send-button").disabled = text == "";
   document.getElementById("count-label").value = 140 - text.length;
+  if (text == "")
+    gReplyID = null;
 }
 
 // Called when the send button is clicked

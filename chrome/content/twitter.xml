@@ -138,6 +138,9 @@
       ]]>
       </constructor>
 
+      <property name="msgid" readonly="true"
+                onget="return this.getAttribute('msgid');"/>
+
       <property name="author" readonly="true"
                 onget="return this.getAttribute('author_username');"/>
 
@@ -155,7 +158,7 @@
 
       <method name="replyToStatus">
         <body>
-          replyTo(this.author);
+          replyTo(this.msgid, this.author);
         </body>
       </method>
     </implementation>

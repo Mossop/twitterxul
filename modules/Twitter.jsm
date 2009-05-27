@@ -483,9 +483,13 @@ TwitterAccount.prototype = {
    *        It will be passed a status code and a status message.
    * @param status
    *        The text of the status message.
+   * @param replyID
+   *        An optional status message that this is the reply to.
    */
-  setStatus: function(successCallback, errorCallback, status) {
+  setStatus: function(successCallback, errorCallback, status, replyID) {
     var url = TWITTER + "/statuses/update.json?status=" + encodeURIComponent(status);
+    if (replyID)
+      url += "&in_reply_to_status_id=" + encodeURIComponent(replyID);
     new TimedRequest(this._username, this._password, "POST", url, {
       onLoad: function(request) {
         safecall(successCallback);
