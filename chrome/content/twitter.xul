@@ -101,7 +101,7 @@
 
   <menupopup id="status-menupopup" onpopupshowing="populateContextMenu()">
     <menuitem id="reply-menu" label="&reply-menu.label;"
-              oncommand="replyTo(getStatusItem(document.popupNode).author)"/>
+              oncommand="replyTo(getStatusItem(document.popupNode).msgid, getStatusItem(document.popupNode).author)"/>
     <menuitem id="direct-menu" label="&direct-menu.label;"
               oncommand="directMessage(getStatusItem(document.popupNode).author)"/>
     <menuseparator/>
