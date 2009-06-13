@@ -388,7 +388,7 @@ TwitterService.prototype = {
       self.errorCallback(statusCode, statusText);
     }
     if (statusSince)
-      account.fetchFriendsTimeline(successCallback, errorCallback, statusSince);
+      account.fetchFriendsTimeline(successCallback, errorCallback, statusSince, 200);
     else
       account.fetchFriendsTimeline(successCallback, errorCallback, null, 200);
     account.fetchReceivedDirectMessages(successCallback, errorCallback, receivedSince);

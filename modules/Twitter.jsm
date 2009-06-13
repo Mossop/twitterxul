@@ -69,6 +69,19 @@ function safecall(callback) {
   }
 }
 
+function buildURL(url, args) {
+  if (!args)
+    return url;
+
+  var query = "";
+  for (var key in args) {
+    query += "&" + key + "=" + encodeURIComponent(args[key]);
+  }
+  if (query.length == 0)
+    return url;
+  return url + "?" + query.substring(1);
+}
+
 function unescapeText(text) {
   text = text.replace("&lt;", "<", "g");
   return text.replace("&gt;", ">", "g");
@@ -463,7 +476,8 @@ TwitterAccount.prototype = {
    *        The text of the message to send.
    */
   sendDirectMessage: function(successCallback, errorCallback, recipient, text) {
-    var url = TWITTER + "/direct_messages/new.json?user=" + recipient + "&text=" + encodeURIComponent(text);
+    var args = { user: recipient, text: text };
+    var url = buildURL(TWITTER + "/direct_messages/new.json", args);
     new TimedRequest(this._username, this._password, "POST", url, {
       onLoad: function(request) {
         safecall(successCallback);
@@ -487,9 +501,10 @@ TwitterAccount.prototype = {
    *        An optional status message that this is the reply to.
    */
   setStatus: function(successCallback, errorCallback, status, replyID) {
-    var url = TWITTER + "/statuses/update.json?status=" + encodeURIComponent(status);
+    var args = { status: status };
     if (replyID)
-      url += "&in_reply_to_status_id=" + encodeURIComponent(replyID);
+      args.in_reply_to_status_id = replyID;
+    var url = buildURL(TWITTER + "/statuses/update.json", args);
     new TimedRequest(this._username, this._password, "POST", url, {
       onLoad: function(request) {
         safecall(successCallback);
@@ -512,9 +527,10 @@ TwitterAccount.prototype = {
    *        Retrieve all messages with an id greater than this. May be null.
    */
   fetchSentDirectMessages: function(successCallback, errorCallback, since) {
-    var url = TWITTER + "/direct_messages.json";
+    var args = {};
     if (since)
-      url += "?since_id=" + since;
+      args.since_id = since;
+    var url = buildURL(TWITTER + "/direct_messages.json", args);
 
     var parser = new DirectMessageParser(successCallback, errorCallback);
     parser.startRequest(this._username, this._password, url);
@@ -532,9 +548,10 @@ TwitterAccount.prototype = {
    *        Retrieve all messages with an id greater than this. May be null.
    */
   fetchReceivedDirectMessages: function(successCallback, errorCallback, since) {
-    var url = TWITTER + "/direct_messages/sent.json";
+    var args = {};
     if (since)
-      url += "?since_id=" + since;
+      args.since_id = since;
+    var url = buildURL(TWITTER + "/direct_messages/sent.json", args);
 
     var parser = new DirectMessageParser(successCallback, errorCallback);
     parser.startRequest(this._username, this._password, url);
@@ -550,7 +567,7 @@ TwitterAccount.prototype = {
    *        It will be passed a status code and a status message.
    */
   fetchFollowers: function(successCallback, errorCallback) {
-    var url = TWITTER + "/statuses/followers.json";
+    var url = buildURL(TWITTER + "/statuses/followers.json");
 
     var parser = new PersonParser(successCallback, errorCallback);
     parser.startRequest(this._username, this._password, url);
@@ -566,7 +583,7 @@ TwitterAccount.prototype = {
    *        It will be passed a status code and a status message.
    */
   fetchFriends: function(successCallback, errorCallback) {
-    var url = TWITTER + "/statuses/friends.json";
+    var url = buildURL(TWITTER + "/statuses/friends.json");
 
     var parser = new PersonParser(successCallback, errorCallback);
     parser.startRequest(this._username, this._password, url);
@@ -584,9 +601,10 @@ TwitterAccount.prototype = {
    *        Retrieve all messages with an id greater than this. May be null.
    */
   fetchReplies: function(successCallback, errorCallback, since) {
-    var url = TWITTER + "/statuses/replies.json";
+    var args = {};
     if (since)
-      url += "?since_id=" + since;
+      args.since_id = since;
+    var url = buildURL(TWITTER + "/statuses/replies.json", args);
 
     var parser = new TimelineParser(successCallback, errorCallback);
     parser.startRequest(this._username, this._password, url);
@@ -603,15 +621,15 @@ TwitterAccount.prototype = {
    * @param since
    *        Retrieve all messages with an id greater than this. May be null.
    * @param count
-   *        The number of messages to retrieve. May be null. Cannot be used
-   *        in conjunction with since.
+   *        The number of messages to retrieve. May be null.
    */
   fetchUserTimeline: function(successCallback, errorCallback, since, count) {
-    var url = TWITTER + "/statuses/user_timeline.json";
+    var args = {};
     if (since)
-      url += "?since_id=" + since;
-    else if (count)
-      url += "?count=" + count;
+      args.since_id = since;
+    if (count)
+      args.count = count;
+    var url = buildURL(TWITTER + "/statuses/user_timeline.json", args);
 
     var parser = new TimelineParser(successCallback, errorCallback);
     parser.startRequest(this._username, this._password, url);
@@ -628,15 +646,15 @@ TwitterAccount.prototype = {
    * @param since
    *        Retrieve all messages with an id greater than this. May be null.
    * @param count
-   *        The number of messages to retrieve. May be null. Cannot be used
-   *        in conjunction with since.
+   *        The number of messages to retrieve. May be null.
    */
   fetchFriendsTimeline: function(successCallback, errorCallback, since, count) {
-    var url = TWITTER + "/statuses/friends_timeline.json";
+    var args = {};
     if (since)
-      url += "?since_id=" + since;
-    else if (count)
-      url += "?count=" + count;
+      args.since_id = since;
+    if (count)
+      args.count = count;
+    var url = buildURL(TWITTER + "/statuses/friends_timeline.json", args);
 
     var parser = new TimelineParser(successCallback, errorCallback);
     parser.startRequest(this._username, this._password, url);
